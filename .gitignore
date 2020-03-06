@@ -2,4 +2,5 @@
 *.pyc
 instance/
 migrations/
-run.sh
+env/
+.vscode
