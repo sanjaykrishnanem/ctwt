@@ -1,23 +1,15 @@
 # app/__init__.py
 import os
-# third-party imports
 from flask import Flask, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
-# local imports
-from config import app_config
+from config import Config
 
-# db variable initialization
 db = SQLAlchemy()
 login_manager = LoginManager()
-# db object which we will use to interact with the database.
 
-
-# create_app functiongiven a configuration name, loads the correct
-# configuration from the config.py file, as well as the configurations
-# from the instance/config.py file.
 def create_app(config_name):
     if os.getenv('FLASK_CONFIG') == "production":
         app = Flask(__name__)
@@ -27,7 +19,7 @@ def create_app(config_name):
         )
     else:    
         app = Flask(__name__, instance_relative_config=True)
-        app.config.from_object(app_config[config_name])
+        app.config.from_object(Config)
         app.config.from_pyfile('config.py')
     Bootstrap(app)
     db.init_app(app)

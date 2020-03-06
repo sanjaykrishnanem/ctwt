@@ -24,6 +24,12 @@ a,
     border-bottom: 1px solid #007ee5;
 }
 
+.Heading {
+    font-family: 'Quicksand', sans-serif;
+    font-size: medium;
+    color: #007ee5;
+}
+
 a:hover {
     color: #007ee5;
 }
@@ -77,12 +83,21 @@ p.copyright {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
+.intro-header1 {
+    text-align: left;
+    color: #f8f8f8;
+    background: url(../img/image.png) no-repeat center left;
+    background-size: contain;
+    height: 100%;
+    width:100%;
+}
+
 .intro-header {
     padding-bottom: 8%;
-    text-align: center;
+    text-align: left;
     color: #f8f8f8;
-    background: url(../img/intro-bg.png) no-repeat center center;
-    background-size: cover;
+    background: url(../img/image.png) no-repeat center left;
+    background-size: contain;
     height: 100%;
 }
 
@@ -90,6 +105,7 @@ p.copyright {
     position: relative;
     padding-top: 10%;
     padding-bottom: 20%;
+    padding-left: 20%;
     text-align: center;
     margin-right: -66%;
 }

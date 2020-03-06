@@ -21,7 +21,7 @@ p {
 
 #cusername {
     font-size: 20px;
-    color: #BDBDBD;
+    color: rgba(0, 0, 0, 0.575);
 }
 
 #mail,

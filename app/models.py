@@ -5,12 +5,6 @@ from app import db, login_manager
 
 
 class Employee(UserMixin, db.Model):
-    """
-    Create an Employee table
-    """
-
-    # Ensures table will be named in plural and not in singular
-    # as is the name of the model
     __tablename__ = 'employees'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -19,52 +13,35 @@ class Employee(UserMixin, db.Model):
     first_name = db.Column(db.String(60), index=True)
     last_name = db.Column(db.String(60), index=True)
     password_hash = db.Column(db.String(128))
-    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    grade_id = db.Column(db.Integer, db.ForeignKey('grades.id'))
     is_admin = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):
-        """
-        Prevent pasword from being accessed
-        """
         raise AttributeError('password is not a readable attribute.')
 
     @password.setter
     def password(self, password):
-        """
-        Set password to a hashed password
-        """
         self.password_hash = generate_password_hash(password)
 
     def verifypassword(self, password):
-        """
-        Check if hashed password matches actual password
-        """
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return '<Employee: {}>'.format(self.username)
 
-
-# Set up user_loader
 @login_manager.user_loader
 def load_user(user_id):
     return Employee.query.get(int(user_id))
 
 
-class Department(db.Model):
-    """
-    Create a Department table
-    """
-
-    __tablename__ = 'departments'
-
+class Team(db.Model):
+    __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), unique=True)
     description = db.Column(db.String(200))
-    employees = db.relationship('Employee', backref='department',
+    employees = db.relationship('Employee', backref='team',
                                 lazy='dynamic')
 
     def __repr__(self):
@@ -72,10 +49,6 @@ class Department(db.Model):
 
 
 class Role(db.Model):
-    """
-    Create a Role table
-    """
-
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -87,19 +60,40 @@ class Role(db.Model):
     def __repr__(self):
         return '{}'.format(self.name)
 
+class Task(db.Model):
+    __tablename__ = 'tasks'
 
-class Grade(db.Model):
-    """
-    Create a Pay Grade table
-    """
-
-    __tablename__ = 'grades'
-
-    id = db.Column(db.Integer, primary_key=True)
-    paygrade = db.Column(db.String(60), unique=True)
-    amount = db.Column(db.String(200))
-    employees = db.relationship('Employee', backref='grade',
+    tid = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.String(200))
+    tasks = db.relationship('AssignTask', backref='task',
                                 lazy='dynamic')
 
     def __repr__(self):
-        return '{}'.format(self.paygrade)
+        return '{}'.format(self.name)
+
+class AssignTask(db.Model):
+    __tablename__ = 'assigntasks'
+
+    tid = db.Column(db.Integer, db.ForeignKey('tasks.tid'), primary_key=True)
+    employeeid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
+    tasks = db.relationship('Employees', backref='task',lazy='dynamic', uselist=False)
+
+    def __repr__(self):
+        return '{}'.format(self.name)
+
+
+class Projects(db.Model):
+    __tablename__ = 'projects'
+
+
+    def __repr__(self):
+        return '{}'.format(self.name)
+
+class AssignProjects(db.Model):
+    __tablename__ = 'assignprojects'
+
+
+    def __repr__(self):
+        return '{}'.format(self.name)
+
+

@@ -1,14 +1,13 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block body %}
-<p id="message">
-    Squad Master allows you to manage your employees in a easy way. You have complete control over the details of the registered employees. Manage the roles,salary grades and departments of your employees without hassle in simple clicks.
-</p>
+{% import "bootstrap/utils.html" as utils %} {% extends "base.html" %} {% block title %}Home{% endblock %} {% block body %}
 <div class="intro-header">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="intro-message">
-                    <h1>Squad Master</h1>
-                    <h3>Manage your employees in the most perfect way</h3>
+                    <div class="Heading">
+                        <h1>Collaborative Team Work Tool</h1>
+                    </div>
+                    <h3>Manage your teams in the most perfect way</h3>
                     </ul>
                     <br>
                     <br>
@@ -17,6 +16,10 @@
                     <br>
                     <br>
                     <a href="{{ url_for('auth.login') }}" id="in">Administrator Login</a>
+                    <br/>
+                    <div style="height: auto;">
+                        <br/> {{ utils.flashed_messages() }}
+                    </div>
                 </div>
             </div>
         </div>

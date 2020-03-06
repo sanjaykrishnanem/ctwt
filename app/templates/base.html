@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>{{ title }} | Squad Master</title>
+    <title>{{ title }} | Collaborative Team Work Tool</title>
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css " rel="stylesheet ">
@@ -22,14 +22,13 @@
                   <span class="icon-bar "></span>
                   <span class="icon-bar "></span>
               </button>
-                <a class="navbar-brand topnav homelogo" href="{{ url_for( 'home.homepage') }} ">Squad Master</a>
+                <a class="navbar-brand topnav homelogo" href="{{ url_for( 'home.homepage') }} ">Collaborative Team Work Tool</a>
             </div>
             <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1 ">
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %} {% if current_user.is_admin %}
                     <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('admin.list_departments') }}">Departments</a></li>
-                    <li><a href="{{ url_for('admin.list_grades') }}">Grades</a></li>
+                    <li><a href="{{ url_for('admin.list_teams') }}">Teams</a></li>
                     <li><a href="{{ url_for('admin.list_roles') }}">Roles</a></li>
                     <li><a href="{{ url_for('admin.list_employees') }}">Employees</a></li>
                     {% else %}
@@ -56,8 +55,7 @@
         <div class="container ">
             <div class="row ">
                 <div class="col-lg-12">
-                    <p class="copyright text-muted small text-center">Made with <i class="fa fa-heart pulse bluecolor"></i>
-                        by the <a href="https://github.com/littlewonder" target="_blank">thelittlewonder</a></p>
+                    <p class="copyright text-muted small text-center" style="font-size: medium;">Team Bazinga</p>
                 </div>
             </div>
         </div>
