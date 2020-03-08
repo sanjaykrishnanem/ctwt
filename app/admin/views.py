@@ -1,8 +1,9 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
+from sqlalchemy import null
 
 from . import admin
-from forms import TeamForm, RoleForm, EmployeeAssignForm
+from forms import TeamForm, RoleForm,ChangeTeamForm, EmployeeAssignForm, TeamAssignForm
 from .. import db
 from ..models import Team, Role, Employee
 
@@ -59,21 +60,30 @@ def edit_team(id):
     add_team = False
 
     team = Team.query.get_or_404(id)
+    teams = Team.query.all()
+    emp = Employee.query.filter(Employee.team_id == id)
+    nemp = Employee.query.filter(((Employee.team_id != id) | (Employee.team_id.is_(None)) ))
+    # emp = Employee.query.all()
+    # c = Employee.query.filter(((Employee.is_admin == False))).all()
+    # print(c)
+    # if c is None:
+    #     add = True
+    # else:
+    #     add = False 
     form = TeamForm(obj=team)
+    editemployee = ChangeTeamForm()
+    redurl = (request.referrer)
+    print(redurl)
     if form.validate_on_submit():
         team.name = form.name.data
         team.description = form.description.data
         db.session.commit()
-        flash('You have successfully edited the team.')
-
-        # redirect to the teams page
-        return redirect(url_for('admin.list_teams'))
-
-    form.description.data = team.description
-    form.name.data = team.name
+        return redirect(url_for('admin.edit_team', id=id))
+        # flash('You have successfully edited the team.')
+        # # redirect to the teams page
     return render_template('admin/teams/team.html', action="Edit",
-                           add_team=add_team, form=form,
-                           team=team, title="Edit Team")
+                           add_team=add_team, form=form, editemployee=editemployee, employees=emp,notemployees=nemp,
+                           team=team, teams=teams, title="Edit Team")
 
 
 @admin.route('/teams/delete/<int:id>', methods=['GET', 'POST'])
@@ -216,6 +226,11 @@ def assign_employee(id):
     form = EmployeeAssignForm(obj=employee)
     if form.validate_on_submit():
         employee.team = form.team.data
+        print form.role.data
+        if form.role.data.name == "Team Lead":
+            employee.is_lead = 1
+        else:
+            employee.is_lead = 0
         employee.role = form.role.data
         db.session.add(employee)
         db.session.commit()
@@ -254,5 +269,54 @@ def delete_employee(id):
                            employee=employee, form=form,
                            title='Delete Employee')
 
-#--------------------------------------------------#
 
+@admin.route('/teams/members/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_team_members(id):
+    """
+    Edit team members
+    """
+    check_admin()
+    team = Team.query.get_or_404(id)
+    form = TeamAssignForm()
+    employees = Employee.query.all()
+
+    if form.validate_on_submit():
+        # print(form.employee.data.id)
+        emp = Employee.query.get_or_404(form.employee.data.id)
+        emp.tid = id
+        if emp.is_admin:
+            abort(403)
+        db.session.commit()
+        message = 'You have successfully added '+form.employee.data.first_name+' to the team'
+        flash(message)
+    return render_template('admin/teams/members/edit.html', addmore = True, employees=employees, team=team, form=form, title="Add Team Members")
+
+@admin.route('/teams/members/add/<int:id>/<int:eid>', methods=['GET', 'POST'])
+@login_required
+def add_team_member(id, eid):
+    """
+    Edit team members
+    """
+    check_admin()
+    employee = Employee.query.get_or_404(eid)
+    employee.team_id = id
+    if employee.is_admin:
+        abort(403)
+    db.session.commit()
+    return redirect(url_for('admin.edit_team', id=id))
+
+@admin.route('/employees/team/change/<int:id>/<int:eid>', methods=['GET', 'POST'])
+@login_required
+def change_member_team(id, eid):
+    check_admin()
+    employee = Employee.query.get_or_404(eid)
+    print eid
+    if employee.is_admin:
+        abort(403)
+    try:
+        employee.team_id = None
+    except TypeError:
+        pass
+    db.session.commit()
+    return redirect(url_for('admin.edit_team', id=id))

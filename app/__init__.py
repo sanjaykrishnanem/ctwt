@@ -39,6 +39,9 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
+    from .lead import lead as lead_blueprint
+    app.register_blueprint(lead_blueprint)
+
     @app.errorhandler(403)
     def forbidden(error):
         return render_template('errors/403.html', title='Forbidden'), 403

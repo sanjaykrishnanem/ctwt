@@ -25,7 +25,7 @@
                                 <td> {{ team.name }} </td>
                                 <td> {{ team.description }} </td>
                                 <td>
-                                    {% if team.employees %} {{ team.employees.count() }} {% else %} 0 {% endif %}
+                                    {% if team.employees %} {{ team.employees.count() }}</a> {% else %} 0 {% endif %}
                                 </td>
                                 <td>
                                     <a href="{{ url_for('admin.edit_team', id=team.id) }}" class="green">

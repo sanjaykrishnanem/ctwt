@@ -1,18 +1,101 @@
-{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %} {% if add_department %} Add Department {% else %} Edit Department {% endif %} {% endblock %} {% block body %}
+{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %} {% if add_team %} Add team {% else %} Edit team {% endif %} {% endblock %} {% block body %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
 <div class="content-section">
     <div class="outer">
-        <div class="middle">
-            <div class="inner">
+        <div class="inner">
+            <div style="width: 100%; display: inline-flex;" >
+                <button onclick="goBack()" class="button"><img src="../../../static/img/left-arrow.svg" height="30px"> Go to Team List</button>
+                <script>
+                    function goBack() {
+                        // window.location.assign(redurl);
+                        window.location.assign("{{ url_for('admin.list_teams') }}");
+                    }
+                </script>
                 <div class="center">
-                    {% if add_department %}
-                    <h1>Add Department</h1>
+                    {% if add_team %}
+                    <h>Add team</h1>
                     {% else %}
-                    <h1>Edit Department</h1>
+                    <h1>Edit {{team.name}} Team</h1>
                     {% endif %}
-                    <br/> {{ wtf.quick_form(form) }}
+                </div>
+            </div>
+            <div class="middle">
+                <div >
+                    <div class="center">
+                        {{ wtf.quick_form(form, form_type="horizontal") }}
+                        <!-- <form class="form form-inline" method="post" role="form">
+                            {{ form.hidden_tag() }}
+                            {{ wtf.form_errors(form, hiddens="only") }} 
+                            {{ wtf.form_field(form.name) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ wtf.form_field(form.description) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ wtf.form_field(form.submit) }}
+                        </form> -->
+                        <br/> 
+                    </div>
+                </div>
+                <div class="center">
+                    <h3>Team Members</h3>
+                    <hr class="intro-divider">
+                    <div class="w3-conainer">
+                        <!-- <ul class="w3-card-4" style="list-style: none;"> -->
+                        <table class="table w3-card-4">
+                            {% for emp in employees %}
+                            <tr>
+                                <td>
+                                    <li class="w3-bar" style="list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;">
+                                        <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+                                        <div class="w3-bar-item" style="list-style: none;">
+                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}">
+                                        <br/><span>{{emp.role}}</span> 
+                                        </div>
+                                    </li>    
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red" style="margin:20px;" >Remove</button></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>    
+                        <!-- </ul> -->
+                    </div>
+                    {% if notemployees.count() != 1 %}
+                    <br />
+                    <h3>Add Members</h3>
+                    <hr class="intro-divider">
+                    {% endif %}
+                    <div class="w3-conainer">
+                        <!-- <ul class="w3-card-4" style="list-style: none;"> -->
+                        <table class="table w3-card-4">
+                            {% for emp in notemployees %}
+                            {% if emp.is_admin %}
+                            {% else %}
+                            <tr>
+                                <td>
+                                    <li class="w3-bar" style="list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;">
+                                        <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+                                        <div class="w3-bar-item" style="list-style: none;">
+                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}">
+                                        <br/><span>{{emp.role}}</span>
+                                        <br/><span>Current Team: {{emp.team}}</span> 
+                                        </div>
+                                    </li>    
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="margin:20px;" >Add Member</button></a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </table>    
+                        <!-- </ul> -->
+                    </div>
+                    <br />  
                 </div>
             </div>
         </div>
     </div>
-</div>
+</div> 
 {% endblock %}

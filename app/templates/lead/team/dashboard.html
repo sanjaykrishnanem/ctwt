@@ -1,0 +1,80 @@
+{% import "bootstrap/utils.html" as utils %}{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %} {% if add_team %} Add team {% else %} Edit team {% endif %} {% endblock %} {% block body %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<div class="content-section">
+    <div class="outer">
+        <div class="inner">
+            <div style="width: 100%; display: inline-flex;" >
+                <button onclick="goBack()" class="button"><img src="../../../static/img/left-arrow.svg" height="30px"> Go to Team List</button>
+                <script>
+                    function goBack() {
+                        // window.location.assign(redurl);
+                        window.location.assign("{{ url_for('home.dashboard') }}");
+                    }
+                </script>
+            </div>
+            <br/> {{ utils.flashed_messages() }} <br />
+            <div class="center">
+                <h3>Projects</h3>
+                <hr class="intro-divider">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="30%" style="text-align: center;"> Name </th>
+                            <!-- <th width="30%">Team</th> -->
+                            <th width="30%" style="text-align: center;"> Start Time </th>
+                            <th width="15%" style="text-align: center;"> Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in projects %}
+                        <tr>
+                            <td style="text-align: center;"> {{x.pname}} </td>
+                            <!-- <td>{{x.project}}</td> -->
+                            <td style="text-align: center; width: 600px;">{{x.start_time}}</td>
+                            <td style="text-align: center;">
+                                <a href="{{url_for('lead.delete_team_project', tid=team.id, pid=x.pid)}}" class="red">
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{url_for('lead.add_team_projects')}}"><button class="button"><i class="fa fa-plus"></i> Add Project</button></a>
+                <br/><br/>
+                <h3>Team Members</h3>
+                {% if employees %}
+                <hr class="intro-divider">
+                <div class="w3-conainer">
+                    <ul class="w3-ul w3-card-4" style="list-style: none;">
+                    {% for emp in employees %}
+                    <!-- <div class="grid-item">
+                        <div class="w3-container">
+                            <div class="w3-card-2" > 
+                                <img src="../../../static/img/avatar.png" alt="Avatar" style="height: 250px;">       
+                                <div class="w3-container w3-center">
+                                <h4>{{emp.first_name}} {{emp.last_name}}</h4>
+                                <div class="w3-section">
+                                    <h5 style="align-items: center;">{{emp.role}}</h5>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <li class="w3-bar" style="list-style-type: none;">
+                        <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+                        <div class="w3-bar-item" style="list-style: none;">
+                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><br>
+                        <span>{{emp.role}}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div> 
+{% endblock %}

@@ -1,0 +1,100 @@
+{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %} {% if add_team %} Add team {% else %} Edit team {% endif %} {% endblock %} {% block body %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+<div class="content-section">
+    <div class="outer">
+        <div class="inner">
+            <div style="width: 100%; display: inline-flex;" >
+                <button onclick="goBack()" class="button"><img src="../../../static/img/left-arrow.svg" height="30px"> Go to Team List</button>
+                <script>
+                    function goBack() {
+                        // window.location.assign(redurl);
+                        window.location.assign("{{ url_for('admin.list_teams') }}");
+                    }
+                </script>
+                <div class="center">
+                    {% if add_team %}
+                    <h1>Add team</h1>
+                    {% else %}
+                    <h1>Edit {{team.name}} Team</h1>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="middle">
+                <div >
+                    <div class="center">
+                        <br/>
+                        {{ wtf.quick_form(form, form_type="horizontal") }}
+                        <!-- <form class="form form-inline" method="post" role="form">
+                            {{ form.hidden_tag() }}
+                            {{ wtf.form_errors(form, hiddens="only") }} 
+                            {{ wtf.form_field(form.name) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ wtf.form_field(form.description) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ wtf.form_field(form.submit) }}
+                        </form> -->
+                        <br/> 
+                    </div>
+                </div>
+                <div class="center">
+                    <h3>Team Members</h3>
+                    <br />
+                    <div class="grid-container">
+                        {% for emp in employees %}
+                        <div class="grid-item">
+                            <div class="w3-container">
+                                <div class="w3-card-2" > 
+                                    <img src="https://www.w3schools.com/w3css/img_avatar3.png" alt="Avatar" style="height: 250px;">       
+                                  <div class="w3-container w3-center">
+                                    <h4>{{emp.first_name}} {{emp.last_name}}</h4>
+                                    <div class="w3-section">
+                                      <!-- <button class="w3-button w3-green" style="height: 50%;" >Accept</button> -->
+                                      <a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red">Remove</button></a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <!-- {{emp.first_name}}<br />
+                            <button onclick="addMem()" class="addbutton">Add</button> -->
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <br />
+                    {% if notemployees.count() != 1 %}
+                    <h3>Add Members</h3>
+                    {% endif %}
+                    <br />
+                    <div class="grid-container">
+                        {% for emp in notemployees %}
+                        {% if emp.is_admin %}
+                        {% else %}
+                        <div class="grid-item">
+                            <div class="w3-container">
+                                <div class="w3-card-2" > 
+                                    <img src="https://www.w3schools.com/w3css/img_avatar3.png" alt="Avatar" style="height: 250px;">       
+                                <div class="w3-container w3-center">
+                                    <h4>{{emp.first_name}} {{emp.last_name}}</h4>
+                                    <div> 
+                                        <span id="roles"><i class="fa fa-vcard-o"></i>  {{emp.role}}</span></div>
+                                        <div style="padding-bottom: 10px;"> <span id="depart" ><i class="fa fa-building"></i>  {{emp.team}}</span>
+                                    </div>
+                                    <div class="w3-section">                                
+                                    <!-- <button class="w3-button w3-green">Accept</button> -->
+                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button class="w3-button w3-green">Add</button></a>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <!-- {{emp.first_name}}<br />
+                            <button onclick="addMem()" class="addbutton">Add</button> -->
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+{% endblock %}

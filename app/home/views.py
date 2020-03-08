@@ -14,7 +14,11 @@ def homepage():
 @home.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('home/dashboard.html', title='Dashboard')
+    if current_user.is_lead == 1:
+        lead = True
+    else:
+        lead = False
+    return render_template('home/dashboard.html', title='Dashboard', lead=lead)
 
 
 @home.route('/admin/dashboard')

@@ -1,5 +1,7 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
+
 
 from app import db, login_manager
 
@@ -16,6 +18,11 @@ class Employee(UserMixin, db.Model):
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     is_admin = db.Column(db.Boolean, default=False)
+    is_lead = db.Column(db.Boolean, default=False)
+    employees = db.relationship('EmpProjects', backref='empproj', lazy='dynamic')
+
+    def __repr__(self):
+        return '{}'.format(self.username)
 
     @property
     def password(self):
@@ -48,6 +55,7 @@ class Team(db.Model):
         return '{}'.format(self.name)
 
 
+
 class Role(db.Model):
     __tablename__ = 'roles'
 
@@ -65,8 +73,6 @@ class Task(db.Model):
 
     tid = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(200))
-    tasks = db.relationship('AssignTask', backref='task',
-                                lazy='dynamic')
 
     def __repr__(self):
         return '{}'.format(self.name)
@@ -76,24 +82,44 @@ class AssignTask(db.Model):
 
     tid = db.Column(db.Integer, db.ForeignKey('tasks.tid'), primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
-    tasks = db.relationship('Employees', backref='task',lazy='dynamic', uselist=False)
+    priority = db.Column(db.Integer, nullable=False)
+    start_time = db.Column(db.DateTime, default=datetime.utcnow)
+    end_time = db.Column(db.DateTime, default=datetime.utcnow)
+    iscompleted = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '{}'.format(self.name)
-
 
 class Projects(db.Model):
     __tablename__ = 'projects'
-
-
+    pid  = db.Column(db.Integer, primary_key=True)
+    projectname = db.Column(db.String(200), nullable=False, unique=True)
+    description = db.Column(db.String(500), nullable=False)
+    pname = db.relationship('AssignProjects', backref='pname',
+                                lazy='dynamic')
     def __repr__(self):
-        return '{}'.format(self.name)
+        return '{}'.format(self.projectname)
 
 class AssignProjects(db.Model):
     __tablename__ = 'assignprojects'
-
+    pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), primary_key=True)
+    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
+    start_time = db.Column(db.DateTime, default=datetime.utcnow)
+    closed = db.Column(db.Boolean, default=False)
+    project = db.relationship('Team', backref='project', uselist=False)
 
     def __repr__(self):
-        return '{}'.format(self.name)
+        return '{}'.format(self.pname)
+
+
+class EmpProjects(db.Model):
+    __tablename__ = 'empprojects'
+    pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), nullable=False)
+    eid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
+    employee = db.relationship('Projects', backref='employeeproj',uselist=False)
+
+    def __repr__(self):
+        return '{}'.format(self.pname)
+
 
 

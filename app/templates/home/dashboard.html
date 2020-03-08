@@ -10,6 +10,9 @@
                     <br>
                     <br>
                     <a href="{{ url_for('home.profile') }}" id="profilebtn">View your profile</a>
+                    {% if lead %}
+                    <a href="{{ url_for('lead.dash') }}" id="profilebtn">View Team Dashboard</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
