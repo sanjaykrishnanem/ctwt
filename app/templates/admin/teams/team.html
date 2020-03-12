@@ -6,22 +6,43 @@
 <div class="content-section">
     <div class="outer">
         <div class="inner">
-            <div style="width: 100%; display: inline-flex;" >
-                <button onclick="goBack()" class="button"><img src="../../../static/img/left-arrow.svg" height="30px"> Go to Team List</button>
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Modal Header</h2>
+                  </div>
+                  <div class="modal-body">
+                    <p>Some text in the Modal Body</p>
+                    <p>Some other text...</p>
+                  </div>
+                  <div class="modal-footer">
+                    <h3>Modal Footer</h3>
+                  </div>
+                </div>
+              
+            </div>
+            <div style="width: 100%; display: inline-flex; margin-top: 10px;" >
+                <button onclick="goBack()" class="button"><img src="../../../static/img/left-arrow.svg" height="10px"> Go to Team List</button>
                 <script>
                     function goBack() {
                         // window.location.assign(redurl);
                         window.location.assign("{{ url_for('admin.list_teams') }}");
                     }
                 </script>
-                <div class="center">
+                <div style="display:block;" class="center">
                     {% if add_team %}
-                    <h>Add team</h1>
+                    <h1 style="text-align:center;">Add Team</h1>
+                    <!-- <hr class="intro-divider" style="margin:auto; margin-bottom: 10px;"> -->
                     {% else %}
-                    <h1>Edit {{team.name}} Team</h1>
+                    <h1 style="text-align:center;">Edit {{team.name}} Team</h1>
+                    <!-- <hr class="intro-divider" style="margin:auto; margin-bottom: 10px;"> -->
                     {% endif %}
                 </div>
             </div>
+
             <div class="middle">
                 <div >
                     <div class="center">
@@ -36,19 +57,22 @@
                         <br/> 
                     </div>
                 </div>
+                {% if add_team %}
+                {% else %}
                 <div class="center">
-                    <h3>Team Members</h3>
+                    <h3>Team Lead</h3>
                     <hr class="intro-divider">
                     <div class="w3-conainer">
                         <!-- <ul class="w3-card-4" style="list-style: none;"> -->
+                        {% if lead.count() != 0 %}
                         <table class="table w3-card-4">
-                            {% for emp in employees %}
+                            {% for emp in lead %}
                             <tr>
                                 <td>
                                     <li class="w3-bar" style="list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;">
                                         <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
                                         <div class="w3-bar-item" style="list-style: none;">
-                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}">
+                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"></a>
                                         <br/><span>{{emp.role}}</span> 
                                         </div>
                                     </li>    
@@ -58,7 +82,47 @@
                                 </td>
                             </tr>
                             {% endfor %}
-                        </table>    
+                        </table>
+                        {% else %}
+                        <div>
+                            <span style="color: rgb(243, 125, 125);">
+                                No Team Lead assigned for Team
+                            </span>
+                        </div>
+                        {% endif %}    
+                        <!-- </ul> -->
+                    </div>
+                    <br/>
+                    <h3>Team Members</h3>
+                    <hr class="intro-divider">
+                    <div class="w3-conainer">
+                        <!-- <ul class="w3-card-4" style="list-style: none;"> -->
+                        {% if employees.count() != 0 %}
+                        <table class="table w3-card-4">
+                            {% for emp in employees %}
+                            <tr>
+                                <td>
+                                    <li class="w3-bar" style="list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;">
+                                        <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+                                        <div class="w3-bar-item" style="list-style: none;">
+                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"></a>
+                                        <br/><span>{{emp.role}}</span> 
+                                        </div>
+                                    </li>    
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red" style="margin:20px;" >Remove</button></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>   
+                        {% else %}
+                        <div>
+                            <span style="color: rgb(243, 125, 125);">
+                                No Team Member added for Team
+                            </span>
+                        </div> 
+                        {% endif %}
                         <!-- </ul> -->
                     </div>
                     {% if notemployees.count() != 1 %}
@@ -72,12 +136,14 @@
                             {% for emp in notemployees %}
                             {% if emp.is_admin %}
                             {% else %}
-                            <tr>
+                            {% if emp.team%}
+                            {% else %}
+                            <tr style="background-color: rgb(165, 236, 143);">
                                 <td>
                                     <li class="w3-bar" style="list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;">
                                         <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
                                         <div class="w3-bar-item" style="list-style: none;">
-                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}">
+                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"></a>
                                         <br/><span>{{emp.role}}</span>
                                         <br/><span>Current Team: {{emp.team}}</span> 
                                         </div>
@@ -87,6 +153,29 @@
                                     <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="margin:20px;" >Add Member</button></a>
                                 </td>
                             </tr>
+                            {%endif%}
+                            {% endif %}
+                            {% endfor %}
+                            {% for emp in notemployees %}
+                            {% if emp.is_admin %}
+                            {% else %}
+                            {% if emp.team%}
+                            <tr style="background-color: rgb(243, 125, 125); padding-bottom: 0;">
+                                <td>
+                                    <li class="w3-bar" style="list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;">
+                                        <img src="../../../static/img/avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+                                        <div class="w3-bar-item" style="list-style: none;">
+                                        <span class="w3-large">{{emp.first_name}} {{emp.last_name}}</span><a href="{{url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"></a>
+                                        <br/><span>{{emp.role}}</span>
+                                        <br/><span>Current Team: {{emp.team}}</span> 
+                                        </div>
+                                    </li>    
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="margin:20px;" >Add Member</button></a>
+                                </td>
+                            </tr>
+                            {%endif%}
                             {% endif %}
                             {% endfor %}
                         </table>    
@@ -94,6 +183,7 @@
                     </div>
                     <br />  
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
