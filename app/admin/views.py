@@ -18,8 +18,23 @@ def check_admin():
 def list_teams():
     check_admin()
     teams = Team.query.all()
+    form = TeamForm()
+    if form.validate_on_submit():
+        team = Team(name=form.name.data,
+                                description=form.description.data)
+        try:
+            # add team to the database
+            db.session.add(team)
+            db.session.commit()
+            flash('You have successfully added a new team.')
+        except:
+            # in case team name already exists
+            flash('Error: team name already exists.')
+
+        # redirect to teams page
+        return redirect(url_for('admin.list_teams'))
     return render_template('admin/teams/teams.html',
-                           teams=teams, title="Teams")
+                           teams=teams, title="Teams", form=form)
 
 
 @admin.route('/teams/add', methods=['GET', 'POST'])
@@ -61,7 +76,8 @@ def edit_team(id):
 
     team = Team.query.get_or_404(id)
     teams = Team.query.all()
-    emp = Employee.query.filter(Employee.team_id == id)
+    lead = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 1)))
+    emp = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 0)))
     nemp = Employee.query.filter(((Employee.team_id != id) | (Employee.team_id.is_(None)) ))
     # emp = Employee.query.all()
     # c = Employee.query.filter(((Employee.is_admin == False))).all()
@@ -82,7 +98,7 @@ def edit_team(id):
         # flash('You have successfully edited the team.')
         # # redirect to the teams page
     return render_template('admin/teams/team.html', action="Edit",
-                           add_team=add_team, form=form, editemployee=editemployee, employees=emp,notemployees=nemp,
+                           add_team=add_team, form=form, editemployee=editemployee, employees=emp, lead=lead, notemployees=nemp,
                            team=team, teams=teams, title="Edit Team")
 
 
@@ -226,7 +242,7 @@ def assign_employee(id):
     form = EmployeeAssignForm(obj=employee)
     if form.validate_on_submit():
         employee.team = form.team.data
-        print form.role.data
+        print(form.role.data)
         if form.role.data.name == "Team Lead":
             employee.is_lead = 1
         else:
@@ -311,7 +327,7 @@ def add_team_member(id, eid):
 def change_member_team(id, eid):
     check_admin()
     employee = Employee.query.get_or_404(eid)
-    print eid
+    print(eid)
     if employee.is_admin:
         abort(403)
     try:

@@ -1,4 +1,7 @@
-{% import "bootstrap/utils.html" as utils %} {% extends "base.html" %} {% block title %}Teams{% endblock %} {% block body %}
+{% import "bootstrap/utils.html" as utils %}{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %}Teams{% endblock %} {% block body %}
+
+<link href="{{ url_for( 'static', filename='css/modal.css' ) }} " rel="stylesheet ">
+
 <div class="content-section">
     <div class="outer">
         <div class="middle">
@@ -47,10 +50,26 @@
                     <div style="text-align: center">
                         <h3> No teams have been added. </h3>
                         <hr class="intro-divider"> {% endif %}
-                        <a href="{{ url_for('admin.add_team') }}" class="btn btn-default btn-lg">
-                            <i class="fa fa-plus"></i> Add Team
-                        </a>
-                    </div>
+                        <!-- <a href="{{ url_for('admin.add_team') }}"> -->
+                             <button class="btn btn-default btn-lg" id="myBtn"><i class="fa fa-plus"></i> Add Team</button>
+                        <!-- </a> -->
+                            <div id="myModal" class="modal">
+
+                                <!-- Modal content -->
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <span class="close">&times;</span>
+                                    <h2>Add Team</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <br/>
+                                    {{ wtf.quick_form(form, form_type="horizontal") }}
+                                </div>
+                                </div>
+                                
+                            </div>
+                            <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
+                        </div>
                 </div>
             </div>
         </div>

@@ -23,7 +23,9 @@ $(function () {
                 <br/> {{ utils.flashed_messages() }} <br />
                 <div class="center">
                     <h1>Add Projects to {{ team.name }}</h1>
-                    <br/> {{ wtf.quick_form(form) }}
+                    <div style="margin:auto">
+                        <br/> {{ wtf.quick_form(form) }}
+                    </div>
                     <!-- <table>
                         <tbody>
                             {% for x in employees %}
