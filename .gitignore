@@ -2,5 +2,5 @@
 *.pyc
 instance/
 migrations/
-env/
+venv/
 .vscode/
