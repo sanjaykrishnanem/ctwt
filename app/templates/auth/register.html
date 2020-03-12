@@ -1,8 +1,78 @@
-{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %}Register{% endblock %} {% block body %}
-<div class="content-section">
-    <div class="center">
-        <h1 class="text-center">Register for an account</h1>
-        <br/> {{ wtf.quick_form(form) }}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/utils.html" as utils %} 
+<!DOCTYPE html>
+<html class="h-100" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for( 'static', filename='img/favicon.ico' ) }}">
+    <link href="{{ url_for( 'static', filename='css/custom.css' ) }} " rel="stylesheet ">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <title>{{ title }} | Collaborative Team Work Tool</title>
+</head>
+
+<body class="h-100">
+    
+    <div id="preloader">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+            </svg>
+        </div>
     </div>
-</div>
-{% endblock %}
+
+    <div class="login-form-bg h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100">
+                <div class="col-xl-6">
+                    <div class="form-input-content">
+                        <div class="card login-form mb-0">
+                            <div class="card-body pt-4">
+                                {{ utils.flashed_messages() }}
+                                <h4 class="text-center">Collaborative Team Work Tool</h4>
+                                <form action="" method="post" class="form mt-2 login-input" role="form">
+                                    {{ form.hidden_tag() }}
+                                    <div class="form-group required">
+                                        <input class="form-control" id="email" name="email" required type="text" value="" placeholder="Email" >
+                                        <p class="help-block">
+                                            
+                                        </p>
+                                    </div>
+                                    <div class="form-group required">
+                                        <input class="form-control" id="username" name="username" required type="text" value="" placeholder="Username" >
+                                        <p class="help-block">
+                                        </p>
+                                    </div>
+                                    <div class="form-group required">
+                                        <input class="form-control" id="first_name" name="first_name" required type="text" value="" placeholder="First Name" >
+                                    </div>
+                                    <div class="form-group required">
+                                        <input class="form-control" id="last_name" name="last_name" required type="text" value="" placeholder="Last Name" >
+                                    </div>
+                                    <div class="form-group required">
+                                        <input class="form-control" id="password" name="password" required type="password" value="" placeholder="Password" >
+                                    </div>
+                                    <div class="form-group required">
+                                        <input class="form-control" id="confirm_password" name="confirm_password" required type="password" value="" placeholder="Confirm Password" >
+                                    </div>
+                                    <input class="submit btn login-form__btn w-100" id="submit" name="submit" type="submit" value="Register">
+                                </form>
+                                <p class="mt-2 login-form__footer">Already have an account?<a href="{{url_for('auth.login')}}" class="text-primary"> Sign In </a> now</p>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for( 'static', filename='plugins/common/common.min.js' ) }}"></script><title>{{ title }} | Collaborative Team Work Tool</title>
+    <script src="{{ url_for( 'static', filename='js/custom.min.js' ) }}"></script>
+    <script src="{{ url_for( 'static', filename='js/settings.js' ) }}"></script>
+    <script src="{{ url_for( 'static', filename='js/gleek.js' ) }}"></script>
+    <script src="{{ url_for( 'static', filename='js/styleSwitcher.js' ) }}"></script>
+    
+</body>
+</html>

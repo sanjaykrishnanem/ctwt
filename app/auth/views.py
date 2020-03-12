@@ -6,7 +6,10 @@ from forms import LoginForm, RegistrationForm
 from .. import db
 from ..models import Employee
 
+import re 
 
+regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -16,10 +19,19 @@ def register():
                             first_name=form.first_name.data,
                             last_name=form.last_name.data,
                             password=form.password.data)
-
-        db.session.add(employee)
+        if not (re.search(regex,form.email.data)):  
+            flash('Invalid Email ID','error')
+            return redirect(url_for('auth.register'))
+        if form.password.data != form.confirm_password.data:
+            flash('Password does not match Confirm Password','error')
+            return redirect(url_for('auth.register'))
+        try:
+            db.session.add(employee)
+        except:
+            flash('Username/Email already exists','error')
+            return redirect(url_for('auth.register'))
         db.session.commit()
-        flash('You have successfully registered! You may now login.')
+        flash('You have been successfully registered! You may now login.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form, title='Register')
 
@@ -45,5 +57,5 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('You have successfully been logged out.','success')
+    flash('You have been successfully logged out.','success')
     return redirect(url_for('auth.login'))
