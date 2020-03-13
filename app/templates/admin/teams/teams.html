@@ -1,9 +1,10 @@
-{% import "bootstrap/utils.html" as utils %}{% import "bootstrap/wtf.html" as wtf %} {% extends "base.html" %} {% block title %}Teams{% endblock %} {% block body %}
+{% import "bootstrap/utils.html" as utils %}{% import "bootstrap/wtf.html" as wtf %} {% extends "dashboard.html" %} {% block title %}Teams{% endblock %} {% block body %}
 
 <link href="{{ url_for( 'static', filename='css/modal.css' ) }} " rel="stylesheet ">
 <!-- <link href="../../../static/plugins/toastr/css/toastr.min.css" rel="stylesheet"> -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link href="../../../static/plugins/sweetalert/css/sweetalert.css" rel="stylesheet">
 
 <div class="content-section">
     <div class="outer">
@@ -64,6 +65,30 @@
                                 <div class="modal-header">
                                     <span class="close">&times;</span>
                                     <h2>Add Team</h2>
+                                    {%if Addsuccess == 1%}
+                                    <script>
+                                        console.log("SUECEE");
+                                        swal("Success","Team added","success",{
+                                            buttons: {cancel: "Okay",
+                                            },
+                                            })
+                                            .then((value) => {
+                                                window.location.replace("{{url_for('admin.list_teams', Addsuccess=0, Addfail=0)}}");
+                                        });    
+                                    </script>
+                                    {%endif%}
+                                    {%if Addfail == 1%}
+                                    <script>
+                                        console.log("SUECEE");
+                                        swal("Error","Team Name already exists","error",{
+                                            buttons: {cancel: "Okay",
+                                            },
+                                            })
+                                            .then((value) => {
+                                                window.location.replace("{{url_for('admin.list_teams', Addsuccess=0, Addfail=0)}}");
+                                        });
+                                    </script>
+                                    {%endif%}
                                 </div>
                                 <div class="modal-body">
                                     <br/>

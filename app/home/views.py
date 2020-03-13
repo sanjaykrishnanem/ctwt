@@ -8,7 +8,7 @@ from ..models import Employee
 
 @home.route('/')
 def homepage():
-    return render_template('home/index.html', title='Welcome to CTWT')
+    return render_template('dashboard.html', title='Welcome to CTWT')
 
 
 @home.route('/dashboard')

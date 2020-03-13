@@ -12,11 +12,6 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
-form {
-    background: white;
-    width: 80%;
-    margin: auto;
-}
 /* Modal Content */
 .modal-content {
     position: relative;
@@ -24,14 +19,40 @@ form {
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 30%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
     animation-duration: 0.4s
 }
+@media (min-width: 400px) {
+    .modal-content {
+        width: 70%;
+    }
+}
+@media (min-width: 576px) {
+    .modal-content {
+        width: 70%;
+    }
+}
 
+@media (min-width: 768px) {
+    .modal-content {
+        width: 70%;
+    }
+}
+
+@media (min-width: 992px) {
+    .modal-content {
+        width: 70%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-content {
+        width: 40%;
+    }
+}
 /* Add Animation */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0} 

@@ -1,0 +1,106 @@
+{% import "bootstrap/wtf.html" as wtf %}{% import "bootstrap/utils.html" as utils %}{% extends "dashboard.html" %} {% block title %}Teams{% endblock %}
+{% block body %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#teamform').on('submit', function(event) {
+            $.ajax({
+                data : {
+                    teamname : $('#teamname').val(),
+                    teamdesc : $('#teamdesc').val()
+                },
+                type : 'POST',
+                url : '{{url_for('admin.team_add')}}'
+            })
+            .done(function(data) {
+                    if(data.success){
+                        console.log("Success");
+                        document.getElementById('myModal').style.display='none';
+                        swal("Success","Team added","success").then((result) => {
+                            if (result.value) {
+                                window.location.reload();
+                            }
+                        }); 
+                    }
+                    else{
+                        console.log("error")
+                        document.getElementById('myModal').style.display='none';
+                        swal("Error","Team name already exists","error"); 
+                    }
+                });
+                event.preventDefault();
+            });
+    });
+</script>
+<script type="text/javascript">
+    
+</script>
+<link href="{{ url_for( 'static', filename='css/modal.css' ) }} " rel="stylesheet ">
+<!-- <link href="../../../static/plugins/toastr/css/toastr.min.css" rel="stylesheet"> -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link href="../../../static/plugins/sweetalert/css/sweetalert.css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-plain">
+              <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="card-header-info">
+                          <th>ID</th>
+                          <th>Team Name</th>
+                          <th>Description</th>
+                          <th width="20%">Employee Count</th>
+                          <th width="20%"></th>
+                          <!-- <th>Team</th> -->
+                        </thead>
+                        <tbody>
+                          {% for team in teams %}
+                          <tr>
+                            <td>{{team.id}}</td>
+                            <td>{{team.name}}</td>
+                            <td>{{team.description}}</td>
+                            <td ><span style="margin-left: 20px;">{% if team.employees %} {{ team.employees.count() }}</a> {% else %} 0 {% endif %}</span></td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_team', id=team.id) }}" class="text-info" rel="tooltip" title="Modify Team" >
+                                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                      <button class="btn btn-dark btn-lg" id="myBtn"><i class="fa fa-plus"></i> Add Team</button>
+                            <div id="myModal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header card-header-info">
+                                        <h3>Add Team</h3>
+                                        <!-- <span style="font-size:18px">Add Team</span> -->
+                                        <span class="close">&times;</span>                          
+                                    </div>
+                                    <div class="modal-body">
+                                        <br/>
+                                        <form id="teamform" action="{{url_for('admin.team_add')}}" method="post">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="teamname" name="teamname" aria-describedby="namehelp" placeholder="Enter team name">
+                                                <small id="namehelp" class="form-text text-muted">Team Name should be unique</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="teamdesc" name="teamdesc" placeholder="Description">
+                                            </div>
+                                              <button type="submit" class="btn btn-info">Submit</button>
+                                        </form>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>    
+</div>
+
+{% endblock %}

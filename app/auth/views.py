@@ -27,10 +27,11 @@ def register():
             return redirect(url_for('auth.register'))
         try:
             db.session.add(employee)
+            db.session.commit()
         except:
+            print "Error"
             flash('Username/Email already exists','error')
             return redirect(url_for('auth.register'))
-        db.session.commit()
         flash('You have been successfully registered! You may now login.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form, title='Register')
@@ -45,7 +46,7 @@ def login():
                 form.password.data):
             login_user(employee)
             if employee.is_admin:
-                return redirect(url_for('home.admin_dashboard'))
+                return redirect(url_for('admin.admin_dashboard'))
             else:
                 return redirect(url_for('home.dashboard'))
         else:

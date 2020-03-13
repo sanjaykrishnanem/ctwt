@@ -1,4 +1,4 @@
-from flask import abort, flash, redirect, render_template, url_for, request
+from flask import abort, flash, redirect, render_template, url_for, request, jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import null
 
@@ -12,30 +12,22 @@ def check_admin():
     if not current_user.is_admin:
         abort(403)
 
+@admin.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def admin_dashboard():
+    check_admin()
+    employeecount = Employee.query.filter(Employee.is_admin == 0).count() 
+    employees = Employee.query.filter(Employee.is_admin == 0)
+    teamcount = Team.query.filter().count() 
+    teams = Team.query.all()
+    return render_template('admin/admin_dashboard.html',title="Admin Dashboard",employees=employees, employeecount=employeecount, teamcount=teamcount, teams=teams)
 
 @admin.route('/teams', methods=['GET', 'POST'])
 @login_required
 def list_teams():
     check_admin()
     teams = Team.query.all()
-    form = TeamForm()
-    if form.validate_on_submit():
-        team = Team(name=form.name.data,
-                                description=form.description.data)
-        try:
-            # add team to the database
-            db.session.add(team)
-            db.session.commit()
-            flash('You have successfully added a new team.')
-        except:
-            # in case team name already exists
-            flash('Error: team name already exists.')
-
-        # redirect to teams page
-        return redirect(url_for('admin.list_teams'))
-    return render_template('admin/teams/teams.html',
-                           teams=teams, title="Teams", form=form)
-
+    return render_template('admin/teams/Teampage.html', title="Teams", teams=teams)
 
 @admin.route('/teams/add', methods=['GET', 'POST'])
 @login_required
@@ -51,18 +43,46 @@ def add_team():
             db.session.add(team)
             db.session.commit()
             flash('You have successfully added a new team.')
+            Addsuccess = 1
+            Addfail = 0
+            return True
+            
         except:
             # in case team name already exists
             flash('Error: team name already exists.')
-
+            Addfail = 1
+            Addsuccess = 0
         # redirect to teams page
-        return redirect(url_for('admin.list_teams'))
+        return redirect(url_for('admin.list_teams', Addfail=Addfail,Addsuccess=Addsuccess))
 
     # load team template
     return render_template('admin/teams/team.html', action="Add",
                            add_team=add_team, form=form,
                            title="Add Team")
 
+@admin.route('/teams_add', methods=['POST'])
+@login_required
+def team_add():
+    check_admin()
+    teamname = request.form['teamname']
+    teamdesc = request.form['teamdesc']
+    # print teamname
+    # print teamdesc
+    team = Team(name=teamname,description=teamdesc)
+    try:
+        db.session.add(team)
+        db.session.commit()
+    except: 
+        return jsonify({'success':False})
+      
+    return jsonify({'success':True})
+    # try:
+    #     db.session.add(team)
+    #     db.session.commit()
+    #     flash('You have successfully added a new team.')
+    #     Addsuccess = 1
+    #     Addfail = 0
+    #     return True
 
 @admin.route('/teams/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -120,6 +140,18 @@ def delete_team(id):
 
     return render_template(title="Delete Team")
 
+@admin.route('/teams/delete', methods=['POST'])
+@login_required
+def team_delete():
+    """
+    Delete a team from the database
+    """
+    check_admin()
+    id = request.form['id']
+    team = Team.query.get_or_404(id)
+    db.session.delete(team)
+    db.session.commit()
+    return jsonify({'success':True})
 
 @admin.route('/roles')
 @login_required
@@ -221,6 +253,7 @@ def list_employees():
     check_admin()
 
     employees = Employee.query.all()
+    # return employees
     return render_template('admin/employees/employees.html',
                            employees=employees, title='Employees')
 
