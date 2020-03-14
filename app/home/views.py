@@ -8,7 +8,10 @@ from ..models import Employee
 
 @home.route('/')
 def homepage():
-    return render_template('dashboard.html', title='Welcome to CTWT')
+    if current_user.is_authenticated:
+        return render_template('dashboard.html', title='Welcome to CTWT')
+    else:
+        return redirect(url_for('auth.login'))
 
 
 @home.route('/dashboard')

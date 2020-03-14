@@ -4,12 +4,12 @@
     $(document).ready(function() {
         $('#teamdelete').click(function(event) {
             Swal.fire({
+                type: 'warning',
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
-                icon: 'warning',
                 showCancelButton: true,
-                // confirmButtonColor: '#3085d6',
-                // cancelButtonColor: '#d33',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Yes, delete team!'
                 }).then((result) => {
                 if (result.value) 
@@ -36,7 +36,7 @@
         <div class="card-body">
             <div style="display:flex; justify-content: center;">
                 <h1 class="text-center">{{team.name}} Team</h1>
-                <div style="margin-top: auto; margin-bottom: auto; margin-left: 20px;" id="teamdelete"><a href="#" class="text-danger" rel="tooltip" title="Delete Team" ><i class="material-icons">delete</i></a></div> 
+                <div style="margin-top: auto; margin-bottom: auto; margin-left: 20px;" id="teamdelete"><a href="#" style="cursor: pointer !important;" class="text-danger" rel="tooltip" title="Delete Team" ><i class="material-icons">delete</i></a></div> 
             </div>
             <div class="middle">
                 <div >
@@ -75,7 +75,7 @@
                                 </td>
                             </tr>
                             {% endfor %}
-                        </table>
+                        </table>Team Leader
                         {% else %}
                         <div>
                             <span style="color: rgb(243, 125, 125);">
