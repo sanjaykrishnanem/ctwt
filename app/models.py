@@ -73,14 +73,6 @@ class Task(db.Model):
 
     tid = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(200))
-
-    def __repr__(self):
-        return '{}'.format(self.name)
-
-class AssignTask(db.Model):
-    __tablename__ = 'assigntasks'
-
-    tid = db.Column(db.Integer, db.ForeignKey('tasks.tid'), primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
     priority = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
@@ -88,38 +80,31 @@ class AssignTask(db.Model):
     iscompleted = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return '{}'.format(self.name)
+        return '{}'.format(self.task)
+   
 
 class Projects(db.Model):
     __tablename__ = 'projects'
     pid  = db.Column(db.Integer, primary_key=True)
+    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
     projectname = db.Column(db.String(200), nullable=False, unique=True)
     description = db.Column(db.String(500), nullable=False)
-    pname = db.relationship('AssignProjects', backref='pname',
-                                lazy='dynamic')
-    def __repr__(self):
-        return '{}'.format(self.projectname)
-
-class AssignProjects(db.Model):
-    __tablename__ = 'assignprojects'
-    pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), primary_key=True)
-    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
     closed = db.Column(db.Boolean, default=False)
-    project = db.relationship('Team', backref='project', uselist=False)
-
+    
     def __repr__(self):
-        return '{}'.format(self.pname)
+        return '{}'.format(self.projectname)
 
 
 class EmpProjects(db.Model):
     __tablename__ = 'empprojects'
     pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), nullable=False)
     eid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
-    employee = db.relationship('Projects', backref='employeeproj',uselist=False)
+    employee = db.relationship('Employee', backref='employeeproj',uselist=False)
 
     def __repr__(self):
         return '{}'.format(self.pname)
+
 
 
 

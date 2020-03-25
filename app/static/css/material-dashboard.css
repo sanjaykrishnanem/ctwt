@@ -445,8 +445,8 @@ template {
 }
 
 html {
-  font-family: sans-serif;
-  line-height: 1.15;
+  font-family: s;
+  line-height: 1ans-serif.15;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   -ms-overflow-style: scrollbar;
@@ -17117,6 +17117,12 @@ label {
   top: 0;
   width: 100%;
   z-index: 2;
+}
+
+#map {
+  z-index: 2;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
 }
 
 .bd-docs .bd-toc-item .bd-sidenav a span {

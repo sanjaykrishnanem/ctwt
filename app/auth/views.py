@@ -40,17 +40,14 @@ def register():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home.homepage'))
+        return redirect(url_for('home.dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         employee = Employee.query.filter_by(email=form.email.data).first()
         if employee is not None and employee.verifypassword(
                 form.password.data):
             login_user(employee)
-            if employee.is_admin:
-                return redirect(url_for('admin.admin_dashboard'))
-            else:
-                return redirect(url_for('home.dashboard'))
+            return redirect(url_for('home.dashboard'))
         else:
             flash('Invalid email or password.', 'error')
     return render_template('auth/login.html', form=form, title='Login')

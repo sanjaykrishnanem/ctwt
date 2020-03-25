@@ -1,6 +1,6 @@
 {% import "bootstrap/wtf.html" as wtf %}{% import "bootstrap/utils.html" as utils %}{% extends "dashboard.html" %} {% block title %}Teams{% endblock %}
-{% block body %}
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+{% block head %}
+{{ super() }}
 <script type="text/javascript">
     $(document).ready(function() {
         $('#teamform').on('submit', function(event) {
@@ -40,6 +40,8 @@
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link href="../../../static/plugins/sweetalert/css/sweetalert.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -70,32 +72,32 @@
                           </tr>
                           {% endfor %}
                         </tbody>
-                      </table>
-                      <button class="btn btn-dark btn-lg" id="myBtn"><i class="fa fa-plus"></i> Add Team</button>
-                        <div id="myModal" class="modal">
-                            <div class="modal-content">
-                                <div class="modal-header card-header-info">
-                                    <h3>Add Team</h3>
-                                    <!-- <span style="font-size:18px">Add Team</span> -->
-                                    <span class="close">&times;</span>                          
-                                </div>
-                                <div class="modal-body">
-                                    <br/>
-                                    <form id="teamform" action="{{url_for('admin.team_add')}}" method="post">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="teamname" name="teamname" aria-describedby="namehelp" placeholder="Enter team name">
-                                            <small id="namehelp" class="form-text text-muted">Team Name should be unique</small>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="teamdesc" name="teamdesc" placeholder="Description">
-                                        </div>
-                                            <button type="submit" class="btn btn-info">Submit</button>
-                                    </form>
-                                    <br/>
-                                </div>
+                    </table>
+                    <button class="btn btn-dark btn-lg" id="myBtn"><i class="fa fa-plus"></i> Add Team</button>
+                    <div id="myModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header card-header-info">
+                                <h3>Add Team</h3>
+                                <!-- <span style="font-size:18px">Add Team</span> -->
+                                <span class="close">&times;</span>                          
+                            </div>
+                            <div class="modal-body">
+                                <br/>
+                                <form id="teamform" action="{{url_for('admin.team_add')}}" method="post">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="teamname" name="teamname" aria-describedby="namehelp" placeholder="Enter team name">
+                                        <small id="namehelp" class="form-text text-muted">Team Name should be unique</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="teamdesc" name="teamdesc" placeholder="Description">
+                                    </div>
+                                        <button type="submit" class="btn btn-info">Submit</button>
+                                </form>
+                                <br/>
                             </div>
                         </div>
-                        <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
+                    </div>
+                    <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
                     </div>
                 </div>
             </div>

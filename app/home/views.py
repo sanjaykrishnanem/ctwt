@@ -8,15 +8,14 @@ from ..models import Employee
 
 @home.route('/')
 def homepage():
-    if current_user.is_authenticated:
-        return render_template('dashboard.html', title='Welcome to CTWT')
-    else:
-        return redirect(url_for('auth.login'))
+    return render_template('home/index.html', title='Welcome to CTWT')
 
 
 @home.route('/dashboard')
 @login_required
 def dashboard():
+    if current_user.is_admin == 1:
+        return redirect(url_for('admin.admin_dashboard'))
     if current_user.is_lead == 1:
         lead = True
     else:
