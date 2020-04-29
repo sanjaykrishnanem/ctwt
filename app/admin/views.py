@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import null
 
 from . import admin
-from forms import TeamForm, RoleForm,ChangeTeamForm, EmployeeAssignForm, TeamAssignForm
+from .forms import TeamForm, RoleForm,ChangeTeamForm, EmployeeAssignForm, TeamAssignForm
 from .. import db
 from ..models import Team, Role, Employee
 
@@ -185,9 +185,9 @@ def role_add():
     check_admin()
     name = request.form['rolename']
     desc = request.form['roledesc']
-    print id
-    print name
-    print desc
+    print(id)
+    print(name)
+    print(desc)
     role = Role(name=name,description=desc)
     try:
         role.name = name
@@ -206,9 +206,9 @@ def role_edit():
     id = request.form['id']
     name = request.form['rolename']
     desc = request.form['roledesc']
-    print id
-    print name
-    print desc
+    print(id)
+    print(name)
+    print(desc)
     role = Role.query.get_or_404(id)
     try:
         role.name = name
@@ -224,7 +224,7 @@ def role_edit():
 def role_delete():
     check_admin()
     id = request.form['id']
-    print id
+    print(id)
     role = Role.query.get_or_404(id)
     try:
         db.session.delete(role)

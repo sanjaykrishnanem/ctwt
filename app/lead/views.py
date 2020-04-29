@@ -75,7 +75,7 @@ def list_projects_emp(id):
     emp = EmpProjects.query.filter((((EmpProjects.pid == pid))))
     # print emp
     for e in emp:
-        print e.eid
+        print(e.eid)
     return jsonify({'success':True})
 
 
@@ -103,7 +103,7 @@ def dash():
         })
     team = Team.query.get_or_404(e)
     tcount = 0.7
-    return render_template('lead/leadbase.html', projects=projects, pcount=PCount, comprojects = ComProjects, team=team, tcount=tcount, employees=employees, title='Team Dashboard')
+    return render_template('lead/overview.html', projects=projects, pcount=PCount, comprojects = ComProjects, team=team, tcount=tcount, employees=employees, title='Team Dashboard')
 
 @lead.route('/team/tasks', methods=['GET', 'POST'])
 @login_required
@@ -117,8 +117,7 @@ def teamtasks():
     e = current_user.team_id
     f = current_user.id
     # print(f)
-    team = Team.query.filter((Team.id == e))
-    return render_template('lead/tasks.html', team=team, title='Team Dashboard')
+    return render_template('lead/tasks.html', team=True, title='Tasks')
 
 @lead.route('/api/team/tasks', methods=['GET', 'POST'])
 @login_required

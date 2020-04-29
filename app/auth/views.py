@@ -2,7 +2,7 @@ from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user, current_user
 
 from . import auth
-from forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm
 from .. import db
 from ..models import Employee
 
@@ -29,7 +29,7 @@ def register():
             db.session.add(employee)
             db.session.commit()
         except:
-            print "Error"
+            print( "Error")
             flash('Username/Email already exists','error')
             return redirect(url_for('auth.register'))
         flash('You have been successfully registered! You may now login.')

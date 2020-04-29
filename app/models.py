@@ -42,6 +42,9 @@ class Employee(UserMixin, db.Model):
     
     def getrole(self):
         return Role.query.filter(Role.id == self.role_id).first().name
+    
+    def getteam(self):
+        return Team.query.filter(Team.id == self.team_id).first().name
 
 @login_manager.user_loader
 def load_user(user_id):
