@@ -1,0 +1,470 @@
+{% extends "lead/base.html" %}
+{% block page %}
+<!-- Header -->
+<!-- Header -->
+<div class="header pb-4 d-flex align-items-center bg-primary">
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-7 col-md-10">
+                <h1 class="display-2 text-white">Tasks</h1>
+                <p class="text-white mt-0 mb-5">Assign tasks to team members and track their status here</p>
+                <a href="#!" class="btn btn-neutral" data-toggle="modal" data-target="#modal-notification">Add Tasks</a>
+                <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog"
+                    aria-labelledby="modal-notification" aria-hidden="true" id="myModal">
+                    <div class="modal-dialog modal-primary modal-dialog-centered modal-" role="document">
+                        <div class="modal-content bg-gradient-primary">
+
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="modal-title-notification">Add Task</h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body pt-0 pb-0">
+                                <div class="text-center pt-0 mt--0">
+                                    <h4 class="heading mt-2">Assign Tasks</h4>
+                                </div>
+                                <div class="nav-wrapper">
+                                    <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text"
+                                        role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab"
+                                                data-toggle="tab" href="#tabs-icons-text-1" role="tab"
+                                                aria-controls="tabs-icons-text-1" aria-selected="true"><i
+                                                    class="ni ni-single-02 mr-2"></i>Individually</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab"
+                                                data-toggle="tab" href="#tabs-icons-text-2" role="tab"
+                                                aria-controls="tabs-icons-text-2" aria-selected="false"><i
+                                                    class="ni ni-collection mr-2"></i>Project Group</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card shadow">
+                                    <div class="card-body bg-gradient-primary" style="padding-bottom: 0;">
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="tab-pane fade show active" id="tabs-icons-text-1"
+                                                role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                                <form role="form" id="indf">
+                                                    <div class="form-group mb-3">
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i
+                                                                        class="ni ni-bullet-list-67"></i></span>
+                                                            </div>
+                                                            <input class="form-control form-control-lg" id="indtaskText"
+                                                                placeholder="Task" type="text" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="indtaskDate" class="form-control-label"
+                                                            style="color: azure;">Deadline </label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i
+                                                                        class="ni ni-calendar-grid-58"></i></span>
+                                                            </div>
+                                                            <input class="form-control" type="date" id="indtaskDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="input-group text-center">
+                                                            <div class="input-group-prepend">
+                                                                <span
+                                                                    style="margin:auto 0; padding-right: 10px;">Priority</span>
+                                                            </div>
+                                                            <div class="align-items-centers text-center">
+                                                                <div class="btn-group btn-group-toggle"
+                                                                    data-toggle="buttons">
+                                                                    <label class="btn btn-secondary active" id="indTlo">
+                                                                        <input type="radio" name="options" id="low"
+                                                                            autocomplete="off" checked=""> Low
+                                                                    </label>
+                                                                    <label class="btn btn-secondary">
+                                                                        <input type="radio" name="options" id="high"
+                                                                            autocomplete="off"> High
+                                                                    </label>
+                                                                </div>
+                                                                <!-- <button type="button" style="width: 100px;"
+                                                                    class="btn btn-info">Normal</button>
+                                                                <button type="button" style="width: 100px;"
+                                                                    class="btn btn-danger">High</button> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group text-center">
+                                                        <h3 style="margin:auto; color: azure; padding-bottom: 10px;">
+                                                            Assign Task to</h3>
+                                                        <div class="input-group" style="width: 60%; margin: 0 auto;">
+                                                            <input id="myInputind" type="text" autocomplete="off"
+                                                                class="form-control form-control-sm"
+                                                                placeholder="Filter user using name or role"
+                                                                aria-label="Filter user using name or role"
+                                                                aria-describedby="button-addon2">
+                                                        </div>
+                                                        <div class="container-fluid my-4 text-center" id="myGridind">
+                                                        </div>
+                                                        <script>
+                                                            $("#myInputind").on("keyup", function () {
+                                                                var value = $(this).val().toLowerCase();
+                                                                // console.log(value);
+                                                                $("#myGridind .chipn").filter(function () {
+                                                                    console.log("HI");
+                                                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                                                                });
+                                                            });
+                                                            var li = [];
+                                                            function AddChip(id, obe) {
+                                                                var gg = obe;
+                                                                if (gg.getAttribute('class') == 'chipn') {
+                                                                    gg.setAttribute('class', 'chipa');
+                                                                    li.push(id);
+                                                                }
+                                                                else {
+                                                                    gg.setAttribute('class', 'chipn');
+                                                                    for (var i in li) {
+                                                                        if (li[i] == id) {
+                                                                            li.splice(i, 1);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            $(document).ready(function () {
+
+                                                                $.get("/api/team/members", function (data) {
+
+                                                                    var row = document.createElement('div');
+                                                                    row.setAttribute('class', 'row');
+                                                                    for (x in data) {
+                                                                        if (x % 3 == 0) {
+                                                                            document.getElementById('myGridind').appendChild(row);
+                                                                            row = document.createElement('div');
+                                                                            row.setAttribute('class', 'row');
+                                                                        }
+                                                                        row.innerHTML += "<div style='margin:10px 10px'id='indchip" + x + "'class='chipn' onclick=AddChip(" + data[x]['id'] + ",indchip" + x + ") ><img src='../../static/img/avatar.png' alt='Person' width='96' height='96'>" + data[x]['name'] + "<br/>" + data[x]['role'] + "</div>";
+                                                                    }
+                                                                    document.getElementById('myGridind').appendChild(row);
+                                                                });
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="submit" id="indAdd" class="btn btn-secondary my-2"
+                                                            data-dismiss="modal">Add</button>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        // process the form
+                                                        $('#indAdd').click(function (event) {
+                                                            console.log(li);
+                                                            var a = document.getElementById("indtaskText").value;
+                                                            var b = document.getElementById("indtaskDate").value;
+                                                            //   console.log(a,b);
+                                                            var c = document.getElementById("indTlo");
+                                                            var d;
+                                                            if (c.classList.contains("active")) {
+                                                                d = "Low";
+                                                            } else {
+                                                                d = "High";
+                                                            }
+                                                            if (a == "") {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please add task title',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            }
+
+                                                            else if (li.length == 0) {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please assign task to atleast one user',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            }
+                                                            else {
+                                                                console.log(d);
+                                                                // get the form data
+                                                                // there are many ways to get this data using jQuery (you can use the class or id also)
+                                                                var formData = {
+                                                                    'task': a,
+                                                                    'deadline': b,
+                                                                    'priority': d,
+                                                                    'group': "ind",
+                                                                    'emp': JSON.stringify(li),
+                                                                };
+                                                                // process the form
+                                                                $.ajax({
+                                                                    type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                                                    url: '/api/team/tasks', // the url where we want to POST
+                                                                    data: formData, // our data object
+                                                                    dataType: 'json', // what type of data do we expect back from the server
+                                                                    encode: true
+                                                                })
+                                                                    // using the done promise callback
+                                                                    .done(function (data) {
+
+                                                                        window.location.reload();
+                                                                        // log data to the console so we can see
+                                                                        console.log(data);
+
+                                                                        // here we will handle errors and validation messages
+                                                                    });
+                                                                event.preventDefault();
+                                                            }
+                                                        });
+
+                                                    });
+                                                </script>
+                                            </div>
+                                            <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel"
+                                                aria-labelledby="tabs-icons-text-2-tab">
+                                                <form role="form" id="prof">
+                                                    <div class="form-group mb-3">
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i
+                                                                        class="ni ni-bullet-list-67"></i></span>
+                                                            </div>
+                                                            <input class="form-control form-control-lg" id="protaskText"
+                                                                placeholder="Task" type="text" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="protaskDate" class="form-control-label"
+                                                            style="color: azure;">Deadline </label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i
+                                                                        class="ni ni-calendar-grid-58"></i></span>
+                                                            </div>
+                                                            <input class="form-control" type="date" id="protaskDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="input-group text-center">
+                                                            <div class="input-group-prepend">
+                                                                <span
+                                                                    style="margin:auto 0; padding-right: 10px;">Priority</span>
+                                                            </div>
+                                                            <div class="align-items-centers text-center">
+                                                                <div class="btn-group btn-group-toggle"
+                                                                    data-toggle="buttons">
+                                                                    <label class="btn btn-secondary active" id="proTlo">
+                                                                        <input type="radio" name="options" id="low"
+                                                                            autocomplete="off" checked=""> Low
+                                                                    </label>
+                                                                    <label class="btn btn-secondary">
+                                                                        <input type="radio" name="options" id="high"
+                                                                            autocomplete="off"> High
+                                                                    </label>
+                                                                </div>
+                                                                <!-- <button type="button" style="width: 100px;"
+                                                                                                                class="btn btn-info">Normal</button>
+                                                                                                            <button type="button" style="width: 100px;"
+                                                                                                                class="btn btn-danger">High</button> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group text-center">
+                                                        <div class="form-group">
+                                                            <label for="exampleFormControlSelect2">Select project to
+                                                                tasks to users</label>
+                                                            <select class="form-control" id="proselect"
+                                                                onchange="UpdateChips()">
+                                                            </select>
+                                                        </div>
+                                                        <div class="container-fluid my-4 text-center" id="myGridpro">
+                                                        </div>
+                                                        <script>
+                                                            $("#myInputpro").on("keyup", function () {
+                                                                var value = $(this).val().toLowerCase();
+                                                                // console.log(value);
+                                                                $("#myGridpro .chipn").filter(function () {
+                                                                    console.log("HI");
+                                                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                                                                });
+                                                            });
+                                                            var proli = [];
+                                                            function UpdateChips() {
+                                                                document.getElementById('myGridpro').innerHTML = '';
+                                                                pid = document.getElementById("proselect").value;
+                                                                var row = document.createElement('div');
+                                                                row.setAttribute('class', 'row');
+                                                                $.get("/api/team/project/" + pid, function (data) {
+                                                                    for (x in data) {
+                                                                        if (x % 3 == 0) {
+                                                                            document.getElementById('myGridpro').appendChild(row);
+                                                                            row = document.createElement('div');
+                                                                            row.setAttribute('class', 'row');
+                                                                        }
+                                                                        row.innerHTML += "<div style='margin:10px 10px'id='prochip" + x + "'class='chipn' onclick=AddChip(" + data[x]['id'] + ",prochip" + x + ") ><img src='../../static/img/avatar.png' alt='Person' width='96' height='96'>" + data[x]['name'] + "<br/>" + data[x]['role'] + "</div>";
+                                                                    }
+                                                                    if (data.length == 0) {
+                                                                        row = document.createElement('span');
+                                                                        row.setAttribute("style", "color:red;background:white");
+                                                                        row.innerHTML = "No users assigned to project";
+                                                                    }
+                                                                    document.getElementById('myGridpro').appendChild(row);
+                                                                    for (x in data) {
+                                                                        AddProChip(data[x]['id'], "prochip" + x);
+                                                                    }
+                                                                });
+                                                            }
+                                                            function AddProChip(id, obe) {
+                                                                var gg = document.getElementById(obe);
+                                                                if (gg.getAttribute('class') == 'chipn') {
+                                                                    gg.setAttribute('class', 'chipa');
+                                                                    proli.push(id);
+                                                                } else {
+                                                                    gg.setAttribute('class', 'chipn');
+                                                                    for (var i in proli) {
+                                                                        if (proli[i] == id) {
+                                                                            proli.splice(i, 1);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            $(document).ready(function () {
+                                                                $.get("/api/team/projects", function (data) {
+                                                                    for (y in data) {
+                                                                        document.getElementById("proselect").innerHTML += "<option value='" + data[y]['id'] + "'>" + data[y]['name'] + "</option>";
+                                                                        // UpdateChips();
+                                                                    }
+                                                                    UpdateChips();
+                                                                });
+
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="submit" id="proAdd" class="btn btn-secondary my-2"
+                                                            data-dismiss="modal">Add</button>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        // process the form
+                                                        $('#proAdd').click(function (event) {
+                                                            console.log(proli);
+                                                            var a = document.getElementById("protaskText").value;
+                                                            var b = document.getElementById("protaskDate").value;
+                                                            //   console.log(a,b);
+                                                            var c = document.getElementById("proTlo");
+                                                            var d;
+                                                            if (c.classList.contains("active")) {
+                                                                d = "Low";
+                                                            } else {
+                                                                d = "High";
+                                                            }
+                                                            if (a == "") {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please add task title',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            }
+                                                            if (b == "") {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please add task deadline',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            }
+                                                            else if (proli.length == 0) {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please assign task to atleast one user',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            }
+                                                            else {
+                                                                console.log(d);
+                                                                // get the form data
+                                                                // there are many ways to get this data using jQuery (you can use the class or id also)
+                                                                var formData = {
+                                                                    'task': a,
+                                                                    'deadline': b,
+                                                                    'priority': d,
+                                                                    'group': "ind",
+                                                                    'emp': JSON.stringify(proli),
+                                                                };
+                                                                // process the form
+                                                                $.ajax({
+                                                                    type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                                                    url: '/api/team/tasks', // the url where we want to POST
+                                                                    data: formData, // our data object
+                                                                    dataType: 'json', // what type of data do we expect back from the server
+                                                                    encode: true
+                                                                })
+                                                                    // using the done promise callback
+                                                                    .done(function (data) {
+
+                                                                        window.location.reload();
+                                                                        // log data to the console so we can see
+                                                                        console.log(data);
+
+                                                                        // here we will handle errors and validation messages
+                                                                    });
+                                                                event.preventDefault();
+                                                            }
+                                                        });
+
+                                                    });
+                                                </script>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid pt-6" id="tasks">
+    <script>
+        $.get("/api/team/tasks", function (data) {
+            var row = document.createElement('div');
+            row.setAttribute('class', 'row');
+            console.log(data);
+            // alert( "Load was performed." );
+            for (x in data) {
+                console.log(x);
+                if (x % 3 == 0) {
+                    document.getElementById('tasks').appendChild(row);
+                    row = document.createElement('div');
+                    row.setAttribute('class', 'row');
+                }
+                var l = '';
+                if (data[x]['group'] != "ind")
+                    l += data[x]['group'];
+                row.innerHTML += "<div class='col-xl-4 col-md-6'><div class='card'><div class='card-body'><div class='row'><div class='col'><h3 class='card-title text-uppercase text-muted mb-0'>" + data[x]['Task'] + "</h3><br/><span class='text-nowrap'>Assigned to: <br/>" + l + "</span></div><div class='col-auto'><div style='cursor'class='icon icon-shape bg-gradient-red text-white rounded-circle shadow'><i class='ni ni-active-40'></i></div></div></div><p class='mt-1 mb-0 text-sm' id='new" + x + "'><span style='float:right'><b>Status<b></span><br/></p></div></div></div>";
+            }
+            document.getElementById('tasks').appendChild(row);
+            for (x in data) {
+                for (y in data[x]['Temp']) {
+                    s = "new" + x;
+                    console.log(s);
+                    var ob = document.getElementById(s);
+                    ob.innerHTML += "<div><span class='text-nowrap'>" + data[x]['Temp'][y]['Ename'] + "</span><span style='float:right'>" + data[x]['Temp'][y]['status'] + "</span><br/><div>";
+                }
+            }
+        });
+    </script>
+</div>
+{% endblock %}
