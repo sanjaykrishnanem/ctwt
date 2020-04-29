@@ -142,7 +142,7 @@
                                                                         if (x % 3 == 0) {
                                                                             document.getElementById('myGridind').appendChild(row);
                                                                             row = document.createElement('div');
-                                                                            row.setAttribute('class', 'row');
+                                                                            row.setAttribute('class', 'row justify-content-center');
                                                                         }
                                                                         row.innerHTML += "<div style='margin:10px 10px'id='indchip" + x + "'class='chipn' onclick=AddChip(" + data[x]['id'] + ",indchip" + x + ") ><img src='../../static/img/avatar.png' alt='Person' width='96' height='96'>" + data[x]['name'] + "<br/>" + data[x]['role'] + "</div>";
                                                                     }
@@ -303,7 +303,7 @@
                                                                         if (x % 3 == 0) {
                                                                             document.getElementById('myGridpro').appendChild(row);
                                                                             row = document.createElement('div');
-                                                                            row.setAttribute('class', 'row');
+                                                                            row.setAttribute('class', 'row justify-content-center');
                                                                         }
                                                                         row.innerHTML += "<div style='margin:10px 10px'id='prochip" + x + "'class='chipn' onclick=AddChip(" + data[x]['id'] + ",prochip" + x + ") ><img src='../../static/img/avatar.png' alt='Person' width='96' height='96'>" + data[x]['name'] + "<br/>" + data[x]['role'] + "</div>";
                                                                     }
