@@ -4,3 +4,4 @@ instance/
 migrations/
 venv/
 .vscode/
+.flaskenv
