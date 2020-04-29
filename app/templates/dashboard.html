@@ -17,10 +17,10 @@
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   {% endblock %}
 </head>
-
-<body class="">
+{% block style %}{% endblock %}
+<body class="bodyt">
   <div class="wrapper ">
-    <div class="sidebar" data-background-color="white" data-color="azure">
+    <div class="sidebar" data-background-color="white" data-color="azure" id="sidebar">
       <div class="logo"><a class="simple-text logo-normal" href="{{url_for('home.homepage')}}">
         CTWT
       </a></div>
@@ -48,7 +48,7 @@
         </ul>
       </div>
     </div>
-    <div class="main-panel">
+    <div class="main-panel" id="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
         <div class="container-fluid">

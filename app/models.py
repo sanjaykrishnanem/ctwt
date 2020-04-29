@@ -34,9 +34,14 @@ class Employee(UserMixin, db.Model):
 
     def verifypassword(self, password):
         return check_password_hash(self.password_hash, password)
-
-    def __repr__(self):
-        return '<Employee: {}>'.format(self.username)
+    
+    @staticmethod
+    def getname(id):
+        e = Employee.query.filter(Employee.id == id).first()
+        return e.first_name + ' ' + e.last_name
+    
+    def getrole(self):
+        return Role.query.filter(Role.id == self.role_id).first().name
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -72,16 +77,25 @@ class Task(db.Model):
     __tablename__ = 'tasks'
 
     tid = db.Column(db.Integer, primary_key=True)
-    task = db.Column(db.String(200))
-    employeeid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
+    task = db.Column(db.String(200), nullable=False)
+    employeeid = db.Column(db.Integer, db.ForeignKey('employees.id'))
     priority = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
     end_time = db.Column(db.DateTime, default=datetime.utcnow)
     iscompleted = db.Column(db.Boolean, default=False)
+    status = db.Column(db.Integer)
+    groupid  = db.Column(db.Integer, db.ForeignKey('tgroup.gid'), nullable=False)
 
     def __repr__(self):
         return '{}'.format(self.task)
-   
+
+
+class Tgroup(db.Model):
+    __tablename__ = 'tgroup'
+
+    gid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    gname = db.Column(db.String(256), nullable=False)
+    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
 
 class Projects(db.Model):
     __tablename__ = 'projects'
@@ -91,19 +105,19 @@ class Projects(db.Model):
     description = db.Column(db.String(500), nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
     closed = db.Column(db.Boolean, default=False)
-    
+    emp = db.relationship('EmpProjects', backref='role',lazy='dynamic')
     def __repr__(self):
         return '{}'.format(self.projectname)
 
 
 class EmpProjects(db.Model):
     __tablename__ = 'empprojects'
-    pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), nullable=False)
+    pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), primary_key=True)
     eid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
     employee = db.relationship('Employee', backref='employeeproj',uselist=False)
 
     def __repr__(self):
-        return '{}'.format(self.pname)
+        return '{}'.format(self.pid)
 
 
 

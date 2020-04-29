@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html class="h-100" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../static/img/favicon.ico">
+    <link href="../../static/css/custom.css" rel="stylesheet ">
+    <title>Collaborative Team Work Tool</title>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+  <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
+
+</head>
+
+<body class="h-100">
+    <div id="preloader">
+        <div class="loader" id="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+    <script>
+        // TODO: Replace the following with your app's Firebase project configuration
+        var firebaseConfig = {
+                                apiKey: "AIzaSyD9MCCrDJ2qGhVRqWfG5OviL5HrA2-ROsI",
+                                authDomain: "logintutorial-524e3.firebaseapp.com",
+                                databaseURL: "https://logintutorial-524e3.firebaseio.com",
+                                projectId: "logintutorial-524e3",
+                                storageBucket: "logintutorial-524e3.appspot.com",
+                                messagingSenderId: "253724520246",
+                                appId: "1:253724520246:web:ff8d54b28e5367d368cd97",
+                                measurementId: "G-61TEYE6XT8"
+                            };
+                            // Initialize Firebase
+                            firebase.initializeApp(firebaseConfig);
+
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+    </script>
+
+    
+    <div id="firebaseui-auth-container"></div>
+    <script>
+        var uiConfig = {
+                            callbacks: {
+                                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                                console.log(authResult);
+                                return false;
+                                },
+                                uiShown: function() {
+                                // The widget is rendered.
+                                // Hide the loader.
+                                document.getElementById('preloader').style.display = 'none';
+                                }
+                            },
+                            // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+                            signInFlow: 'popup',
+                            signInSuccessUrl: '',
+                            signInOptions: [
+                                // Leave the lines as is for the providers you want to offer your users.
+                                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                                firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                            ],
+                            // Terms of service url.
+                            tosUrl: '',
+                            // Privacy policy url.
+                            privacyPolicyUrl: ''
+                        };
+
+    </script>
+    <script>
+        ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+    <script src="../../static/plugins/common/common.min.js' ) }}"></script>
+    <script src="../../static/js/custom.min.js' ) }}"></script>
+    <script src="../../static/js/settings.js' ) }}"></script>
+    <script src="../../static/js/gleek.js' ) }}"></script>
+    <script src="../../static/styleSwitcher.js' ) }}"></script>
+    
+</body>
+</html>
+
+
+
+
+

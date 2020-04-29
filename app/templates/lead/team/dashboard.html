@@ -6,6 +6,9 @@
 <link href="../../../static/plugins/sweetalert/css/sweetalert.css" rel="stylesheet">
 <script type="text/javascript">
     $(document).ready(function() {
+        // var obj = document.getElementById("sidebar");
+        // obj.style.display = "none";
+        // document.getElementById("main-panel").style.width = "100%";
         $('#projectform').on('submit', function(event) {
             $.ajax({
                 data : {
@@ -23,6 +26,7 @@
                         document.getElementById('myModal').style.display='none';
                         swal("Success","Project added","success").then((result) => {
                             if (result.value) {
+                                
                                 window.location.reload();
                             }
                         }); 
@@ -39,68 +43,91 @@
 </script>
 {% endblock %}
 {% block body %}
+{% block style %}<style>
+    .bodyt {
+        /* background-color: white; */
+    }
+</style>{% endblock %}
 <div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="card card-blog">
-                  <div class="card-header">
-                    <!-- <div class="card-icon">
-                      <i class="material-icons">content_copy</i>
-                    </div> -->
-                    <!-- <p class="card-category">Used Space</p> -->
-                    <h3 class="card-title ">{{team.name}} Team</h3>
-                    <div class="container-fluid">
-                        
-                        <div class="row">
-                        {% for project in projects %}    
-                            <div class="col-lg-3 col-md-6 col-sm-6">
-                                <div class="card">
-                                    
-                                </div>
-                            </div>
-                            
-                        {% endfor %}
-                        </div>
+    <h2 class="text-center" style="font-weight: bold;">{{team.name}} Team</h2>
+    <style>
+        .newnav{
+            width: auto;
+            margin: auto;
+        }
+        .newnav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            background-color: #333;
+        }
+        
+        .newnav li {
+            float: left;
+        }
+        
+        .newnav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        
+        .newnav li a:hover:not(.active) {
+            background-color: #111;
+        }
 
+        .active {
+            background-color: #00bcd4;
+        }
+
+    </style>        
+    <div class="newnav">
+        <ul>
+            <li><a id="Overview" href="{{url_for('lead.dash')}}">Overview</a></li>
+            <li><a id="Projects" href="{{url_for('lead.team_projects')}}">Projects</a></li>
+            <li><a href="#contact">Tasks</a></li>
+            <li><a href="#contact">Conversations</a></li>
+        </ul>
+    </div>
+    {% block pgcontent %}{% endblock %}
+</div> 
+<div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header card-header-info">
+                <h3>Add Project</h3>
+                <span class="close">&times;</span>                          
+            </div>
+            <div class="modal-body">
+                <form id="projectform" action="{{url_for('lead.add_team_project')}}" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="projectname" aria-describedby="namehelp" placeholder="Enter Project name">
+                        <small id="namehelp" class="form-text text-muted">Project Name should be unique</small>
                     </div>
-                  </div>
-                  <div class="card-footer">
-                    <div class="footer">
-                        <button class="btn btn-dark btn-lg" id="myBtn"><i class="fa fa-plus"></i> Add Project</button>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="projectdesc" placeholder="Project Description">
                     </div>
-                  </div>
-                  <div id="myModal" class="modal">
-                    <div class="modal-content">
-                        <div class="modal-header card-header-info">
-                            <h3>Add Project</h3>
-                            <!-- <span style="font-size:18px">Add Team</span> -->
-                            <span class="close">&times;</span>                          
-                        </div>
-                        <div class="modal-body">
-                            <br/>
-                            <form id="projectform" action="{{url_for('lead.add_team_project')}}" method="post">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="projectname" aria-describedby="namehelp" placeholder="Enter Project name">
-                                    <small id="namehelp" class="form-text text-muted">Project Name should be unique</small>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="projectdesc" placeholder="Project Description">
-                                </div>
-                                <div class="form-group">
-                                    <input type="date" class="form-control" placeholder="Start Date" id="projectdate">
-                                    <!-- <input type='text' class="form-control" id='datetimepicker4' /> -->
-                                </div>
-                                    <button type="submit" class="btn btn-info">Submit</button>
-                            </form>
-                            <br/>
-                        </div>
+                    <div class="form-group">
+                        <input type="date" class="form-control" placeholder="Start Date" id="projectdate" required>
                     </div>
-                </div>
-                <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
-                </div>
-              </div>
+                        <button type="submit" class="btn btn-info">Submit</button>
+                </form>
+            </div>
         </div>
     </div>
-</div> 
+    <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
+</div>
+<script>
+    var element, name, arr;
+    if("{{title}}" == "Team Dashboard" && "{{subtitle}}" == "")
+        t = "Overview";
+    else
+        t = "{{subtitle}}";
+    element = document.getElementById(t);
+    name = "active";
+    element.className = name;
+</script>
 {% endblock %}

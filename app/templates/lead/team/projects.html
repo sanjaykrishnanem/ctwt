@@ -1,0 +1,53 @@
+{% extends "lead/team/dashboard.html" %}
+{% block pgcontent %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<div class="container-fluid">
+    <h1>Projects</h1>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th width="30%"> Name </th>
+                    {% if ad %}
+                        <th width="30%">Team</th>
+                    {% endif %}
+                    <th width="30%"> Start Time </th>
+                    <th width="10%"> Action </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pro in projects %}
+                <tr>
+                    <td> {{pro.projectname}} </td>
+                    {% if ad %}
+                        <td>{{pro.project}}</td>
+                    {% endif %}
+                    <td style="width: 600px;">{{pro.start_time}}</td>
+                    <td>
+                                Delete
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- <table>
+            <tbody>
+                {% for x in projects %}
+                    <tr> 
+                    <td style="width: 800px;">{{x.pname}}</td>
+                    {% if ad %}
+                    <td style="width: 600px;">{{x.project}}</td>
+                    {% endif %}
+                    <td style="width: 600px;">{{x.start_time}}</td>
+                    </tr> 
+                {% endfor %}
+            </tbody>
+        </table> -->
+        <!-- <div class="grid-container">
+            {% for emp in employees %}
+            <div class="grid-item">{{emp.first_name}}</div>
+            {% endfor %}
+        </div> -->
+</div>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "lead/team/dashboard.html" %}
+{% block pgcontent %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 col-md-3 pl-1 pr-1 order-last">            
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(60deg, #26c6da, #00acc1);">
+                    <h4 class="text-center">Team Members</h4>
+                </div>
+                <div class="card-body" style="padding-left: 0;padding-right: 0;">
+                    {% for emp in employees %}
+                    <a href="#{{emp.id}}">
+                    <li class="w3-bar" style="list-style-type: none;">
+                        <div class="w3-bar-item" style="list-style: none;">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="../../../static/img/avatar.png" class="w3-circle image1" style="height: auto; display: block; margin-left: auto; margin-right: auto;">
+                                    </div>
+                                    <div class="col-md-6" style="padding: 0 0;text-align: center;margin: auto;">
+                                        <span class="w3-medium">{{emp.first_name}} {{emp.last_name}}</span>
+                                        <br/><span>{{emp.role}}</span>
+                                    </div>
+                                </div>                               
+                            </div>
+                        </div>
+                    </li>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 pl-0 pr-1">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 pl-1 pr-1 pb-1">
+                        <div class="card mb-0">
+                            <div class="card-header" style="background: linear-gradient(60deg, #ec7270, #e53935);">
+                                <h4 class="text-center">Projects</h4>
+                            </div>
+                            <div class="card-body" style="padding-left: 0;padding-right: 0;">
+                                {% for pro in projects %}
+                                <div class="ml-4 mr-4">
+                                    <div class="card card-stats">
+                                        <div class="card-header card-header-success card-header-icon">
+                                            <div class="card-icon">
+                                            <span style="font-size: 15px; font-weight:normal;">{{pro.projectname}}</span>
+                                            </div>
+                                            <p class="card-category" style="text-align: left; font-weight: normal;">{{pro.description}}</p>
+                                            <p class="card-title text-center mt-4 mb-2">{{tcount * 100}}% tasks complete</p>
+                                        </div>
+                                        <div class="card-body" style="padding:0 !important;text-align: left;">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div style="width: 80%; margin:auto">
+                                                        <div>
+                                                            <style>
+                                                                #test{{pro.pid}} {
+                                                                    margin: auto;
+                                                                    max-width:100%;
+                                                                    height: auto;
+                                                                    position: relative;
+                                                                    text-align: center;
+                                                                    font-size: 70%;
+                                                                }
+                                                            </style>
+                                                            <div id="test{{pro.pid}}"></div>
+                                                            <script src="{{url_for('static',filename='js/progressbar.min.js')}}"></script>
+                                                            <script>
+                                                                var bar = new ProgressBar.Line(test{{pro.pid}}, {
+                                                                    strokeWidth: 4,
+                                                                    easing: 'easeInOut',
+                                                                    duration: 1400,
+                                                                    color: '#FFEA82',
+                                                                    trailColor: '#eee',
+                                                                    trailWidth: 1,
+                                                                    svgStyle: {width: '100%', height: '100%'},
+                                                                    from: {color: '#FFEA82'},
+                                                                    to: {color: '#ED6A5A'},
+                                                                    step: (state, bar) => {
+                                                                        bar.path.setAttribute('stroke', state.color);
+                                                                    }
+                                                                });
+                                                                bar.animate({{tcount}});
+                                                            </script>
+                                                        </div>
+                                                    </div>
+ 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer" style="border-top: 1px solid #eee; margin-top: 20px;">
+                                            <div class="stats" style="text-align: justify;">
+                                                <i class="material-icons">group</i><span class="card-title pl-0" style="text-align: left; padding-left:20px"><p class="mb-0">Employee Count: {{pro.emp.count()}}</p></span>
+                                                <i class="material-icons">content_copy</i><span class="card-title pl-0" style="text-align: left; padding-left:20px"><p class="mb-0">0 Task Assigned</p></span>
+                                                <i class="material-icons">date_range</i><span class="card-title pl-0" style="text-align: left; padding-left:20px"><p class="mb-0" id="start{{pro.pid}}"></p></span>
+                                            </div>
+                                            <script>
+                                                d = document.getElementById("start{{pro.pid}}");
+                                                e = "{{pro.start_time}}";
+                                                var date = new Date(e);
+                                                d.innerHTML = "Start Date "+date.getDate()+"/"+date.getMonth()+"/"+date.getUTCFullYear();
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl-1 pr-0 pb-1">
+                        <div class="card mb-0">
+                            <div class="card-header" style="background: linear-gradient(60deg, #ffa726, #fb8c00);">
+                                <h4 class="text-center">Tasks</h4>
+                            </div>
+                            <div class="card-body">
+                                <h2>
+                                   3    
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

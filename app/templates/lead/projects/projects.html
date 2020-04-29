@@ -26,15 +26,13 @@
                                 {% endif %}
                                 <td style="width: 600px;">{{x.start_time}}</td>
                                 <td>
-                                    <a href="{{url_for('lead.delete_team_project', tid=team.id, pid=x.pid)}}" class="red">
                                          Delete
-                                    </a>
+
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                    <a href="{{url_for('lead.add_team_projects')}}"><button class="button">Add Project +</button></a>
                     <!-- <table>
                         <tbody>
                             {% for x in projects %}

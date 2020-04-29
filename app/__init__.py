@@ -24,7 +24,7 @@ def create_app(config_name):
     Bootstrap(app)
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_message = "You are not authorised to see this page. Please log in"
+    login_manager.login_message = "You are not authorised to see the page. Please log in"
     login_manager.login_view = "auth.login"
 
     migrate = Migrate(app, db)
