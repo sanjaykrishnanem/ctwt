@@ -1,6 +1,6 @@
 # app/__init__.py
 import os
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -34,6 +34,11 @@ app.register_blueprint(home_blueprint)
 
 from .lead import lead as lead_blueprint
 app.register_blueprint(lead_blueprint)
+
+@app.before_request
+def check_for_maintenance(): 
+    if request.path != url_for('home.maintenance'):
+        return redirect(url_for('home.maintenance'))
 
 @app.errorhandler(403)
 def forbidden(error):

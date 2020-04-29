@@ -37,7 +37,7 @@ def list_members():
         })
     return jsonify(emp)
 
-@lead.route('/api/team/projects', methods=['GET', 'POST'])
+@lead.route('/team/projects', methods=['GET', 'POST'])
 @login_required
 def team_projects():
     """

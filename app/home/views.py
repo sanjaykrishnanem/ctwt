@@ -10,6 +10,9 @@ from ..models import Employee
 def homepage():
     return render_template('home/index.html', title='Welcome to CTWT')
 
+@home.route('/maintenance')
+def maintenance():
+    return render_template('maintenance.html')
 
 @home.route('/dashboard')
 @login_required
