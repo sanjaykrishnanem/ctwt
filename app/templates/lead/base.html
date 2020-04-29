@@ -56,19 +56,19 @@
                     <!-- Nav items -->
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/team/dashboard">
+                            <a class="nav-link" id="udashlink" href="/dashboard">
                                 <i class="ni ni-tv-2 text-primary"></i>
-                                <span class="nav-link-text">Dashboard</span>
+                                <span class="nav-link-text">User Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.html">
+                            <a class="nav-link" id="uprofilelink" href="/profile">
                                 <i class="ni ni-single-02 text-yellow"></i>
                                 <span class="nav-link-text">Profile</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/team/tasks">
+                            <a class="nav-link" id="utasklink"href="/tasks">
                                 <i class="ni ni-bullet-list-67 text-default"></i>
                                 <span class="nav-link-text">Tasks</span>
                             </a>
@@ -77,50 +77,33 @@
                     <!-- Divider -->
                     <hr class="my-3">
                     <!-- Heading -->
+                    {% if current_user.getteam() != "" %}
                     <h6 class="navbar-heading p-0 text-muted">
-                        <span class="docs-normal">Documentation</span>
+                        <span class="docs-normal">{{current_user.getteam()}} Team</span>
                     </h6>
+                    {% endif %}
                     <!-- Navigation -->
-                    <!-- <ul class="navbar-nav mb-md-3">
+                    <ul class="navbar-nav mb-md-3">
+                        {% if current_user.getteam() != "" %}
                         <li class="nav-item">
-                            <a class="nav-link"
-                                href="https://demos.creative-tim.com/argon-dashboard/docs/getting-started/overview.html"
-                                target="_blank">
-                                <i class="ni ni-spaceship"></i>
-                                <span class="nav-link-text">Getting started</span>
+                            <a class="nav-link" href="/team/dashboard">
+                                <i class="fa fa-desktop" aria-hidden="true"></i>
+                                <span class="nav-link-text">Team Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                                href="https://demos.creative-tim.com/argon-dashboard/docs/foundation/colors.html"
-                                target="_blank">
-                                <i class="ni ni-palette"></i>
-                                <span class="nav-link-text">Foundation</span>
+                            <a class="nav-link" href="/team/tasks">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                                <span class="nav-link-text">Team Tasks</span>
                             </a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link"
-                                href="https://demos.creative-tim.com/argon-dashboard/docs/components/alerts.html"
-                                target="_blank">
-                                <i class="ni ni-ui-04"></i>
-                                <span class="nav-link-text">Components</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"
-                                href="https://demos.creative-tim.com/argon-dashboard/docs/plugins/charts.html"
-                                target="_blank">
-                                <i class="ni ni-chart-pie-35"></i>
-                                <span class="nav-link-text">Plugins</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active active-pro" href="upgrade.html">
-                                <i class="ni ni-send text-dark"></i>
-                                <span class="nav-link-text">Upgrade to PRO</span>
+                            <a class="nav-link active active-pro" style="padding-left: 60px !important;">
+                                <span class="nav-link-text">Team Bazinga</span>
                             </a>
                         </li> 
-                    </ul>-->
+                    </ul>
                 </div>
             </div>
         </div>
@@ -131,29 +114,12 @@
         <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Search form -->
-                    <!-- <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
-            <div class="form-group mb-0">
-              <div class="input-group input-group-alternative input-group-merge">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-search"></i></span>
-                </div>
-                <input class="form-control" placeholder="Search" type="text">
-              </div>
-            </div>
-            <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </form> -->
                     <div>
                         <div>
                             <h6 class="h2 text-white d-inline-block mb-0">{{current_user.getteam()}} Team</h6>
                             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                                     <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-                                    {% if team %}
-                                    <li class="breadcrumb-item"><a href="team/dashboard">Team</a></li>
-                                    {% endif %}
                                     <li class="breadcrumb-item active">{{title}}</li>
                                     <!-- <li class="breadcrumb-item active" aria-current="page">Team Dashboard</li> -->
                                 </ol>
