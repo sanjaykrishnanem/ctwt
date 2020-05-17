@@ -6,7 +6,7 @@ from . import admin
 from .forms import TeamForm, RoleForm,ChangeTeamForm, EmployeeAssignForm, TeamAssignForm
 from .. import db
 from ..models import Team, Role, Employee, EmpProjects, Projects
-import requests
+# import requests
 
 def check_admin():
     if not current_user.is_admin:
