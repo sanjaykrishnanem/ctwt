@@ -44,7 +44,11 @@ class Employee(UserMixin, db.Model):
         return Role.query.filter(Role.id == self.role_id).first().name
     
     def getteam(self):
-        return Team.query.filter(Team.id == self.team_id).first().name
+        if Team.query.filter(Team.id == self.team_id).first() is None:
+            return ''
+        else:
+            c =  Team.query.filter(Team.id == self.team_id).first().name
+            return c
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -79,26 +83,23 @@ class Role(db.Model):
 class Task(db.Model):
     __tablename__ = 'tasks'
 
-    tid = db.Column(db.Integer, primary_key=True)
-    task = db.Column(db.String(200), nullable=False)
+    taskid = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employees.id'))
+    pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'))
+    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    gid = db.Column(db.String(256), nullable=False)
+
+    task = db.Column(db.String(200), nullable=False)
     priority = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
     end_time = db.Column(db.DateTime, default=datetime.utcnow)
     iscompleted = db.Column(db.Boolean, default=False)
     status = db.Column(db.Integer)
-    groupid  = db.Column(db.Integer, db.ForeignKey('tgroup.gid'), nullable=False)
+    # groupid  = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return '{}'.format(self.task)
 
-
-class Tgroup(db.Model):
-    __tablename__ = 'tgroup'
-
-    gid = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    gname = db.Column(db.String(256), nullable=False)
-    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
 
 class Projects(db.Model):
     __tablename__ = 'projects'
@@ -108,7 +109,6 @@ class Projects(db.Model):
     description = db.Column(db.String(500), nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
     closed = db.Column(db.Boolean, default=False)
-    emp = db.relationship('EmpProjects', backref='role',lazy='dynamic')
     def __repr__(self):
         return '{}'.format(self.projectname)
 
@@ -118,6 +118,8 @@ class EmpProjects(db.Model):
     pid  = db.Column(db.Integer, db.ForeignKey('projects.pid'), primary_key=True)
     eid = db.Column(db.Integer, db.ForeignKey('employees.id'), primary_key=True)
     employee = db.relationship('Employee', backref='employeeproj',uselist=False)
+    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True, nullable=False)
+
 
     def __repr__(self):
         return '{}'.format(self.pid)

@@ -1,0 +1,759 @@
+{% extends "testbase.html" %}
+{% block page %}
+<!-- Header -->
+<!-- Header -->
+<div class="header pb-4 d-flex align-items-center bg-primary">
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-auto">
+                <h1 class="display-2 text-white">{{projectname}} Project</h1>
+                <div><h2 class="text-white mt-0 mb-5">Status: {% if prostatus %}<b style="color: yellowgreen;"><i class="fas fa-check-circle"></i> Completed</b>{% else %}<b style="color: orange;"><i class="fas fa-clock"></i> Not Completed</b>{% endif %}</h2></div>
+                <a href="#!" class="btn btn-neutral" data-toggle="modal" data-target="#modal-notification">Update project status</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-notification" tabindex="-1" role="dialog" aria-labelledby="modal-notification"aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-notification">Update project status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- <link rel="stylesheet" href="{{url_for('static',filename='css/customradio.css')}}" type="text/css"/> -->
+                <div>
+
+                    <form class="toggle text-center">
+                        <input type="radio" id="choice1" name="choice"  value="true">
+                        <label for="choice1"><span class="text-success">Completed</span></label>
+
+                        <input type="radio" id="choice2" name="choice" value="false">
+                        <label for="choice2 text-warning"><span class="text-warning">Not Completed</span></label>
+
+                    </form>
+                    <script>
+                        // alert("{{prostatus}}");
+                        if("{{prostatus}}" == "True"){
+                            document.getElementById("choice1").checked = true;
+                            document.getElementById("choice2").checked = false;
+                        }
+                        else{
+                            document.getElementById("choice2").checked = true;
+                            document.getElementById("choice1").checked = false;
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="status" class="btn btn-primary">Save changes</button>
+            </div>
+            <script>
+                document.getElementById("status").addEventListener("click",Click);
+                function Click(){
+                    id = {{id}};
+                    if(document.getElementById("choice1").checked == true){
+                        // alert("WTTT");
+                        status = 1;
+                    }
+                    else if(document.getElementById("choice2").checked == true){
+                        status = 0;
+                    }
+                    else{
+                        alert("Select at leat one option");
+                    }
+                    var url = "/api/project/"+id+"/status";
+                    $.ajax({
+                        type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                        url: url, // the url where we want to POST
+                        data: {"status":status}, // our data object
+                        dataType: 'json', // what type of data do we expect back from the server
+                        encode: true
+                    }).done(function (data) {
+                        window.location.reload();
+                        console.log(data);
+                    });
+                }
+
+            </script>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid pt-4">
+            <div class="row justify-content-around">
+                <div class="col-7 card">
+                    <div class="card-header bg-transparent">
+                        <!-- <h6 class="text-uppercase text-muted ls-1 mb-1">Tasks</h6> -->
+                        <span class="pl-3 pr-3 pt-1 pb-1 text-center text-white bg-success" data-toggle="modal"
+                            data-target="#modal-task" style="cursor:pointer; align-self: center; border-radius: 2rem; box-shadow: 1px 1px 3px grey; float: right;">
+                                <b>Add</b><i class="ml-1 mr-0 fa fa-plus" style="font-size: 1rem;" aria-hidden="true"></i>
+                        </span>
+                        <!-- <h2 class="h3 mb-0 display-4" id="memtitle">Tasks</h2> -->
+                        <h4 class="h3 mb-0" style="font-size:1.3rem; font-weight:600; line-height:1.5" id="memtitle">Tasks</h4>
+                        
+                    </div>
+                    <div class="header container-fluid pt-3 w-100" style="justify-content: center; align-content: center;">
+                        <!-- <div class="row">
+                            <h1 class="col-10 display-5 text-center" style="float: right;">Tasks</h1>
+                            <span class="col-auto pt-1 pb-1 text-center text-white bg-success" data-toggle="modal"
+                                data-target="#modal-task"
+                                style="cursor:pointer; align-self: center; border-radius: 2rem; box-shadow: 1px 1px 3px grey;"><b>Add</b><i
+                                    class="ml-1 mr-0 fa fa-plus" style="font-size: 1rem;" aria-hidden="true"></i></span>
+                        </div> -->
+                        <div class="modal fade" id="modal-task" tabindex="-1" role="dialog"
+                            aria-labelledby="modal-task" aria-hidden="true" id="myModal">
+                            <div class="modal-dialog modal-primary modal-dialog-centered modal-" role="document">
+                                <div class="modal-content bg-gradient-primary">
+
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="modal-title-notification">Add Task</h6>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body pt-0 pb-0">
+                                        <div class="text-center pt-0 mt--0">
+                                            <h4 class="heading mt-2">Assign Tasks</h4>
+                                        </div>
+                                        <div class="card shadow">
+                                            <div class="card-body bg-gradient-primary" style="padding-bottom: 0;">
+                                                <form role="form" id="prof">
+                                                    <div class="form-group mb-3">
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i
+                                                                        class="ni ni-bullet-list-67"></i></span>
+                                                            </div>
+                                                            <input class="form-control form-control-lg"
+                                                                id="protaskText" placeholder="Task" type="text"
+                                                                required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="protaskDate" class="form-control-label"
+                                                            style="color: azure;">Deadline </label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i
+                                                                        class="ni ni-calendar-grid-58"></i></span>
+                                                            </div>
+                                                            <input class="form-control" type="date"
+                                                                id="protaskDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="input-group text-center">
+                                                            <div class="input-group-prepend">
+                                                                <span
+                                                                    style="margin:auto 0; padding-right: 10px;">Priority</span>
+                                                            </div>
+                                                            <div class="align-items-centers text-center">
+                                                                <div class="btn-group btn-group-toggle"
+                                                                    data-toggle="buttons">
+                                                                    <label class="btn btn-secondary active"
+                                                                        id="proTlo">
+                                                                        <input type="radio" name="options"
+                                                                            id="low" autocomplete="off"
+                                                                            checked=""> Low
+                                                                    </label>
+                                                                    <label class="btn btn-secondary">
+                                                                        <input type="radio" name="options"
+                                                                            id="high" autocomplete="off"> High
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group text-center">
+                                                        Select Users to assign tasks
+                                                        <div class="container-fluid my-4 text-center"
+                                                            id="myGridpro">
+                                                        </div>
+                                                        <script>
+                                                            $("#myInputpro").on("keyup", function () {
+                                                                var value = $(this).val().toLowerCase();
+                                                                // console.log(value);
+                                                                $("#myGridpro .chipn").filter(
+                                                                function () {
+                                                                    console.log("HI");
+                                                                    $(this).toggle($(this)
+                                                                        .text()
+                                                                        .toLowerCase()
+                                                                        .indexOf(value) > -1
+                                                                        );
+                                                                });
+                                                            });
+                                                            var proli = [];
+                                                            function AddProChip(ID) {
+                                                                var gg = document.getElementById(ID);
+                                                                if (gg.getAttribute('class') == 'chipn') {
+                                                                    gg.setAttribute('class', 'chipa');
+                                                                    proli.push(ID);
+                                                                } else {
+                                                                    gg.setAttribute('class', 'chipn');
+                                                                    for (var i in proli) {
+                                                                        if (proli[i] == ID) {
+                                                                            proli.splice(i, 1);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            function UpdateChips() {
+                                                                document.getElementById('myGridpro').innerHTML = '';
+                                                                pid = {{id}};
+                                                                var row = document.createElement('div');
+                                                                row.setAttribute('class', 'row');
+                                                                $.get("/api/team/project/" + pid, function (
+                                                                    data) {
+                                                                    for (x in data) {
+                                                                        if (x % 3 == 0) {
+                                                                            document.getElementById('myGridpro').appendChild(row);
+                                                                            row = document.createElement('div');
+                                                                            row.setAttribute('class','row justify-content-center');
+                                                                        }
+                                                                        row.innerHTML +=
+                                                                            "<div style='margin:10px 10px'id='" + data[x]['id'] + "'class='chipn' onclick=AddProChip(" + data[x]['id'] + ") ><img src='../../static/img/avatar.png' alt='Person' width='96' height='96'>" + data[x]['name'] + "<br/>" + data[x]['role'] + "</div>";
+                                                                    }
+                                                                    if (data.length == 0) {
+                                                                        row = document.createElement('span');
+                                                                        row.setAttribute("style","color:red;background:white");
+                                                                        row.innerHTML = "No users assigned to project";
+                                                                    }
+                                                                    document.getElementById('myGridpro').appendChild(row);
+                                                                });
+                                                            }
+                                                            $(document).ready(function () {
+                                                                UpdateChips();
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="submit" id="proAdd"
+                                                            class="btn btn-secondary my-2"
+                                                            data-dismiss="modal">Add</button>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        // process the form
+                                                        $('#proAdd').click(function (event) {
+                                                            console.log(proli);
+                                                            var a = document.getElementById(
+                                                                "protaskText").value;
+                                                            var b = document.getElementById(
+                                                                "protaskDate").value;
+                                                            //   console.log(a,b);
+                                                            var c = document.getElementById(
+                                                                "proTlo");
+                                                            var d;
+                                                            if (c.classList.contains(
+                                                                "active")) {
+                                                                d = "Low";
+                                                            } else {
+                                                                d = "High";
+                                                            }
+                                                            if (a == "") {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please add task title',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            }
+                                                            if (b == "") {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please add task deadline',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            } else if (proli.length == 0) {
+                                                                Swal.fire({
+                                                                    title: 'Error!',
+                                                                    text: 'Please assign task to atleast one user',
+                                                                    type: 'error',
+                                                                    confirmButtonText: 'Okay'
+                                                                })
+                                                            } else {
+                                                                console.log(d);
+                                                                // get the form data
+                                                                // there are many ways to get this data using jQuery (you can use the class or id also)
+                                                                var formData = {
+                                                                    'task': a,
+                                                                    'deadline': b,
+                                                                    'priority': d,
+                                                                    'emp': JSON.stringify(
+                                                                        proli),
+                                                                    'project' : {{id}}
+                                                                };
+                                                                // process the form
+                                                                $.ajax({
+                                                                        type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                                                        url: '/api/team/tasks', // the url where we want to POST
+                                                                        data: formData, // our data object
+                                                                        dataType: 'json', // what type of data do we expect back from the server
+                                                                        encode: true
+                                                                    })
+                                                                    // using the done promise callback
+                                                                    .done(function (data) {
+
+                                                                        window.location
+                                                                            .reload();
+                                                                        // log data to the console so we can see
+                                                                        console.log(data);
+
+                                                                        // here we will handle errors and validation messages
+                                                                    });
+                                                                event.preventDefault();
+                                                            }
+                                                        });
+
+                                                    });
+                                                </script>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <hr class="mt-2 mb-0"/> -->
+                    <div class="table-responsive pb-3" id="TaskTableDiv">
+                        <table class="w-100">
+                            <thead>
+                                <tr class="pb-4 pt-4 bg-secondary" style="border-bottom:1px solid rgba(0, 0, 0, .05)">
+                                    <th class="text-center pt-4 pb-4 " width="10%">Employee</th>
+                                    <th class="text-center pt-4 pb-4 " width="20%">Task</th>
+                                    <th class="text-center pt-4 pb-4 " width="30%">Deadline</th>
+                                    <th class="text-center pt-4 pb-4 " width="20%">Progress</th>
+                                    <th class="text-center pt-4 pb-4 " width="10%">Priority</th>
+                                    <th class="text-center pt-4 pb-4 " width="10%"></th>
+
+                                    <!-- <th class="text-center"><span class="ml-4" style="float: left;">Task</span><span class="mr-8"style="float: right;">Progress</span></th>   -->
+                                </tr>
+                            </thead>
+                                <!-- <hr class="mt-2 mb-0"/> -->
+
+                            <tbody class="list" id = "emp">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- <div class="container-fluid" id="emp"></div> -->
+                    <!-- <script>
+                        $.get("/api/project/"+{{id}}+"/tasks", function (data) {
+                            console.log(data);
+                            for(x in data){
+                                var row = document.createElement("tr");
+                                if(x != 0){
+                                    row.style.borderTopColor = "text-secondary";
+                                    row.style.borderTopStyle = "dashed";
+                                    row.style.borderTopWidth = "thin";
+                                    row.style.borderColor    = "#858585";
+                                }
+                                var ele = document.createElement("td");
+                                var ele2 = document.createElement("td");
+                                if(x == 0){
+                                    ele.classList.add("pt-4");
+                                    ele2.classList.add("pt-4");
+                                }
+                                // ele.classList.add("col-6");
+                                ele2.classList.add("pl-4")
+                                ele2.classList.add("pt-4")
+                                ele.innerHTML = "<li class='w3-bar'><img src='../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:85px'><div class='w3-bar-item'><span class='w3-large'>"+data[x]['Ename']+"</span><br><span>"+data[x]['Erole']+"</span></div></li>"
+                                row.appendChild(ele);
+                                ele2.innerHTML = "<div class='w3-bar-item mb-4' id='task"+data[x]['Eid']+"'></div>";
+                                row.appendChild(ele2);
+                                document.getElementById("emp").appendChild(row);
+                            }
+                            for(x in data){
+                                var t = document.getElementById("task"+data[x]['Eid']);
+                                for(y in data[x]['tasks']){
+                                    var e = document.createElement("span");
+                                    e.classList.add("ml-3");
+                                    e.innerHTML += data[x]['tasks'][y]['task'];
+                                    var g = document.createElement("span");
+                                    g.classList.add("mr-3");
+                                    g.style.float = "right";
+                                    if(data[x]['tasks'][y]['status'] == "Yet to start"){
+                                        g.innerHTML += "<i class='fas fa-clock mr-1 text-warning'></i>";
+                                    }
+                                    g.innerHTML += data[x]['tasks'][y]['status'] + "<span class='ml-7'>x</span>";
+                                    e.appendChild(g);
+                                    t.appendChild(e);
+                                    t.innerHTML += "<br/>";
+                                }
+                                // t.style.classList.add("bg-secondary");
+                            }
+                        });
+                    </script> -->
+                        
+                    <script>
+                        let ms = 0;
+                        $.get("/api/project/"+{{id}}+"/tasks", function (data) {
+                            console.log(data);
+                            if(data.length == 0){
+                                // var row = document.createElement('span');
+                                // row.
+                                // row.setAttribute("style","color:red;background:white; width:100%");
+                                // row.innerHTML = "No users has been assigned any task";
+                                document.getElementById("TaskTableDiv").innerHTML = "No users has been assigned any task";
+                                document.getElementById("TaskTableDiv").setAttribute("style","color:red;background:white; width:100%");
+                                document.getElementById("TaskTableDiv").classList.add("text-center")
+                                document.getElementById("TaskTableDiv").classList.add("pt-4")
+                                // alert(")")
+
+                            }
+                            for(x in data){
+                                var row = document.createElement("tr");
+                                if(x != 0){
+                                    // row.style.borderTopColor = "text-secondary";
+                                    // row.style.borderTopStyle = "dotted";
+                                    // row.style.borderTopWidth = "thin";
+                                    // row.style.borderColor    = "#858585";
+
+                                    row.style.borderTop = "1px solid rgba(0, 0, 0, .05)";
+                                }
+                                var col1 = document.createElement("td");
+                                
+                                ms = data[x]['tasks'].length;
+                                // console.log(ms)
+                                col1.rowSpan = ms;
+                                col1.innerHTML = "<div class='mt-4 mb-2 w3-medium' style='align-items:center'><span>"+data[x]['Ename']+"</span></div>";
+                                console.log(col1);
+                                row.classList.add("text-center");
+                                row.appendChild(col1);
+                                // if()
+                                for(y in data[x]['tasks']){
+                                    var row2 = document.createElement("tr");
+                                    row2.classList.add("text-center");
+                                    var col2 = document.createElement("td");
+                                    var col3 = document.createElement("td");
+                                    var col4 = document.createElement("td");
+                                    var col5 = document.createElement("td");
+                                    var col6 = document.createElement("td");
+
+
+                                    col2.rowSpan = 1;
+                                    col3.rowSpan = 1;
+                                    col4.rowSpan = 1;
+                                    col5.rowSpan = 1;
+                                    col6.rowSpan = 1;
+
+                                    col2.innerHTML = data[x]['tasks'][y]['task'];
+
+                                    var s = new Date(data[x]['tasks'][y]['deadline']);
+                                    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                                    s = days[s.getDay()]+", "+ s.getDate() + "-" + s.getMonth() + "-" + s.getFullYear()
+                                    // s = s.toISOString().slice(0,10);
+                                    col3.innerHTML = s;
+                                    if(data[x]['tasks'][y]['status'] == "Yet to start"){
+                                        col4.innerHTML += "<i class='fas fa-clock mr-1 text-warning'></i>";
+                                    }
+                                    col4.innerHTML += data[x]['tasks'][y]['status'];
+                                    // col5.innerHTML = data[x]['tasks'][y]['priority']
+                                    if(data[x]['tasks'][y]['priority'] == "1"){
+                                        col5.classList.add("text-danger");
+                                        col5.innerHTML = "High";
+                                    }
+                                    else{
+                                        col5.classList.add("text-success");
+                                        col5.innerHTML = "Low";
+                                    }
+                                    col6.innerHTML = "<span style='cursor:pointer' onclick='deleteTask("+data[x]['tasks'][y]['tid']+")'>x</span>";
+                                    col6.classList.add("text-danger");    
+                                    
+                                    var s = new Date(data[x]['tasks'][y]['deadline']);
+                                    var today = new Date()
+                                    if(s.getDate() < today.getDate() && s.getMonth() <= today.getMonth() && s.getFullYear() <= today.getFullYear())
+                                    {   
+                                        // alert("Noo");
+                                        col3.classList.add("text-danger");
+                                        col2.classList.add("text-danger");
+                                        col4.classList.add("text-danger");
+                                    }
+                                    if(y == data[x]['tasks'].length - 1){
+                                        col2.classList.add("pb-4");
+                                        col3.classList.add("pb-4");
+                                        col4.classList.add("pb-4");
+                                        col5.classList.add("pb-4");
+                                        col6.classList.add("pb-4");
+                                    }
+                                    if(y == 0){
+                                        col2.classList.add("pt-4");
+                                        col3.classList.add("pt-4");
+                                        col4.classList.add("pt-4");
+                                        col5.classList.add("pt-4");
+                                        col6.classList.add("pt-4");
+
+                                        row.appendChild(col2);
+                                        row.appendChild(col3);
+                                        row.appendChild(col4);
+                                        row.appendChild(col5);
+                                        row.appendChild(col6);
+                                        document.getElementById("emp").appendChild(row);
+
+                                    }
+                                    else{
+                                        row2.appendChild(col2);
+                                        row2.appendChild(col3);
+                                        row2.appendChild(col4);
+                                        row2.appendChild(col5);
+                                        row2.appendChild(col6);
+                                        document.getElementById("emp").appendChild(row2);
+                                    }
+                                }               
+                                console.log(row.innerHTML);                                               
+
+                            }
+                            
+                        });
+                        function deleteTask(id){
+                            url = "/api/task/"+id+"/delete"
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: "You won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                                if (result.value) {
+                                    $.ajax({
+                                        type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                        url: url, // the url where we want to POST
+                                        // data: {"status":status}, // our data object
+                                        dataType: 'json', // what type of data do we expect back from the server
+                                        encode: true
+                                    }).done(function (data) {
+                                        window.location.reload();
+                                        console.log(data);
+                                    });
+                                    Swal.fire(
+                                    'Deleted!',
+                                    )
+                                }
+                            })
+                        }
+
+                    </script>
+                    <!-- <div><h2 class="text-white mt-0 mb-5">Status: {% if prostatus %}<b style="color: yellowgreen;"><i class="fas fa-check-circle"></i> Completed</b>{% else %}<b style="color: orange;"><i class="fas fa-clock"></i> Not Completed</b>{% endif %}</h2></div> -->
+                    <!-- <a href="#!" class="btn btn-neutral" data-toggle="modal" data-target="#modal-notification">Update project status</a> -->
+                </div>
+                <div class="col-5">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header bg-transparent">
+                                <span class="pl-3 pr-3 pt-1 pb-1 text-center text-white bg-success" data-toggle="modal"
+                                    data-target="#modal-members"
+                                    style="cursor:pointer; align-self: center; border-radius: 2rem; box-shadow: 1px 1px 3px grey; float: right;">
+                                    <b>Add</b><i class="ml-1 mr-0 fa fa-plus" style="font-size: 1rem;"
+                                        aria-hidden="true"></i>
+                                </span>
+                                <h4 class="h3 mb-0" style="font-size:1.2rem; font-weight:600; line-height:1.5" id="memtitle">Projects Members</h4>
+                            <div class="row align-items-center">
+                                <div class="col">
+                                <!-- <h6 class="text-uppercase text-muted ls-1 mb-1">Tasks</h6> -->
+                                <h3 class="h3 mb-0" id="memtitle"></h3>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="w3bar card-body">
+                                <ul class="w3-ul w3-card-1" style="list-style-type: none;" id="elist"></ul>
+                                <script>
+                                  $.get( "/api/project/"+{{id}}+"/members", function( data ) {
+                                      console.log(data);
+                                      if(data.length == 0){
+                                        document.getElementById("elist").innerHTML += "<span class='text-danger text-center' style='float:left'>No Member has been added to Project</span>"
+                                      }
+                                    //   alert( "Load was performed." );
+                                      for(x in data){
+                                          console.log(x);
+                                          document.getElementById("elist").innerHTML +=`<div style="border-bottom:1px solid rgba(0, 0, 0, .05); justify-content: center;" class='row'><div class='col-4 pl-0 pr-0' style='align-self:center;'><table class="responsive-table"><tbody><tr><td class="pl-2" rowspan="2"><img src='../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:50px'></td><td class="pl-3" rowspan="1"><b>`+data[x]['Ename']+`</b><br/>`+data[x]['Prole']+`</td></tr></tbody></table></div><div class='col-5 pl-0 pt-2 pb-3' style='align-self:center;'><table class="responsive-table"><tbody><tr><td class="pl-2" rowspan="2">Tasks Assigned</td><td class="pl-2" rowspan="1"><span class='w3-small'>High Priority</span></td><td class="pl-3" rowspan="1">`+data[x]['Hcount']+`</td></tr><tr><td class="pl-2" rowspan="1"><span class='w3-small'>Low Priority<span></td><td class="pl-3" rowspan="1">`+data[x]['Lcount']+`</td></tr></tbody></table></div><div class='col-1 pr-0' style='align-self:center;'><i class="fas fa-trash" style="cursor:pointer" onclick="rem(`+data[x]['id']+`)"></i></div></div>`;
+                                      }
+                                  });
+
+                                  function rem(ID){
+                                    pid = {{id}}
+                                    var formData = {
+                                        'emp': ID,
+                                        'project' : pid
+                                    };
+                                    // pid = {{id}}
+                                    $.ajax({
+                                        type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                        url: "/project/members/remove", // the url where we want to POST
+                                        data: formData, // our data object
+                                        dataType: 'json', // what type of data do we expect back from the server
+                                        encode: true
+                                    })
+                                    // using the done promise callback
+                                    .done(function (data) {
+                                        window.location.reload();
+                                        console.log(data);
+
+                                    });
+                                    
+                                  }
+                              </script>
+                            </div>
+                        </div>
+                      </div>
+                </div>
+
+            </div>
+</div>
+
+
+
+<div class="modal fade" id="modal-members" tabindex="-1" role="dialog"
+    aria-labelledby="modal-members" aria-hidden="true" id="myModal">
+    <div class="modal-dialog modal-primary modal-dialog-centered modal-" role="document">
+        <div class="modal-content bg-gradient-primary">
+
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-notification">Add Members</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body pt-0 pb-0">
+                <div class="text-center pt-0 mt--0">
+                    <h4 class="heading mt-2">{{projectname}} Project</h4>
+                </div>
+                <div class="card shadow">
+                    <div class="card-body bg-gradient-primary" style="padding-bottom: 0;">
+                        <form role="form" id="prof">
+                            <div class="form-group">
+
+                            <div class="form-group text-center">
+                                Select Users to assign tasks
+                                <div class="input-group" style="width: 60%; margin: 0 auto;">
+                                    <input id="myInputind" type="text" autocomplete="off"
+                                        class="form-control form-control-sm"
+                                        placeholder="Filter user using name or role"
+                                        aria-label="Filter user using name or role"
+                                        aria-describedby="button-addon2">
+                                </div>
+                                <div class="container-fluid my-4 text-center"id="members"></div>
+                                <script>
+                                    $("#myInputind").on("keyup", function () {
+                                        var value = $(this).val().toLowerCase();
+                                        // console.log(value);
+                                        $("#members .chipn").filter(
+                                        function () {
+                                            console.log("HI");
+                                            $(this).toggle($(this)
+                                                .text()
+                                                .toLowerCase()
+                                                .indexOf(value) > -1
+                                                );
+                                        });
+                                    });
+                                    var memli = [];
+                                    function AddMemberChip(ID) {
+                                        var gg = document.getElementById("Mem"+ID);
+                                        if (gg.getAttribute('class') == 'chipn') {
+                                            gg.setAttribute('class', 'chipa');
+                                            memli.push(ID);
+                                        } else {
+                                            gg.setAttribute('class', 'chipn');
+                                            for (var i in memli) {
+                                                if (memli[i] == ID) {
+                                                    memli.splice(i, 1);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    function UpdateMemberChips() {
+                                        document.getElementById('members').innerHTML = '';
+                                        pid = {{id}};
+                                        var row = document.createElement('div');
+                                        row.setAttribute('class', 'row');
+                                        $.get("/api/project/members/add/"+pid, function (
+                                            data) {
+                                            console.log(data);
+                                            for (x in data) {
+                                                if(data[x]['role'] != "Team Lead"){
+                                                    if (x % 3 == 0) {
+                                                        document.getElementById('members').appendChild(row);
+                                                        row = document.createElement('div');
+                                                        row.setAttribute('class','row justify-content-center');
+                                                    }
+                                                    row.innerHTML +=
+                                                        "<div style='margin:10px 10px'id='Mem" + data[x]['id'] + "'class='chipn' onclick=AddMemberChip(" + data[x]['id'] + ") ><img src='../../static/img/avatar.png' alt='Person' width='96' height='96'>" + data[x]['name'] + "<br/>" + data[x]['role'] + "</div>";
+                                                }
+                                            }
+                                            if (data.length == 0) {
+                                                row = document.createElement('span');
+                                                row.setAttribute("style","color:red;background:white");
+                                                row.innerHTML = "No users assigned to project";
+                                            }
+                                            document.getElementById('members').appendChild(row);
+                                        });
+                                    }
+                                    $(document).ready(function () {
+                                        UpdateMemberChips();
+                                    });
+                                </script>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" id="memAdd"
+                                    class="btn btn-secondary my-2"
+                                    data-dismiss="modal">Add</button>
+                            </div>
+                        </form>
+                        <script>
+                            $(document).ready(function () {
+                                // process the form
+                                $('#memAdd').click(function (event) {
+                                    console.log(memli);
+                                    if (memli.length == 0) {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: 'Select atleast one user to add to project',
+                                            type: 'error',
+                                            confirmButtonText: 'Okay'
+                                        })
+                                    } else {
+                                        // console.log(data);
+                                        var formData = {
+                                            'emp': JSON.stringify(memli),
+                                            'project' : {{id}}
+                                        };
+                                        pid = {{id}}
+                                        $.ajax({
+                                                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                                                url: "/project/members/add/"+pid, // the url where we want to POST
+                                                data: formData, // our data object
+                                                dataType: 'json', // what type of data do we expect back from the server
+                                                encode: true
+                                            })
+                                            // using the done promise callback
+                                            .done(function (data) {
+                                                window.location.reload();
+                                                console.log(data);
+
+                                            });
+                                        event.preventDefault();
+                                    }
+                                });
+
+                            });
+                        </script>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

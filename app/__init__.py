@@ -37,7 +37,7 @@ app.register_blueprint(lead_blueprint)
 
 @app.before_request
 def check_for_maintenance(): 
-    if request.path != url_for('home.maintenance'):
+    if request.path == url_for('home.maintenance'):
         return redirect(url_for('home.maintenance'))
 
 @app.errorhandler(403)

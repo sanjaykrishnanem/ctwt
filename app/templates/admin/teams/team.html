@@ -1,5 +1,5 @@
-{% import "bootstrap/wtf.html" as wtf %} {% extends "dashboard.html" %} {% block title %} Add team  {% endblock %} {% block body %}
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+{% import "bootstrap/wtf.html" as wtf %} {% extends "testbase.html" %} {% block title %} Add team  {% endblock %} {% block page %}
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script> -->
 <script type="text/javascript">
     $(document).ready(function() {
         $('#teamdelete').click(function(event) {
@@ -31,24 +31,19 @@
     });
 </script>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<div class="content-section">
-    <div class="card-header">
-        <div class="card-body">
-            <div style="display:flex; justify-content: center;">
-                <h1 class="text-center">{{team.name}} Team</h1>
-                <div style="margin-top: auto; margin-bottom: auto; margin-left: 20px;" id="teamdelete"><a href="#" style="cursor: pointer !important;" class="text-danger" rel="tooltip" title="Delete Team" ><i class="material-icons">delete</i></a></div> 
-            </div>
+<div class="header pb-2 d-flex align-items-center bg-primary">
+    <div class="container-fluid row justify-content-center">
+        <h1 class="display-2 text-white">{{team.name}} Team</h1>
+        <div style="margin-top: auto; margin-bottom: auto; margin-left: 20px;" id="teamdelete"><a href="#" style="cursor: pointer !important;" class="text-danger" rel="tooltip" title="Delete Team" ><i class="fa fa-trash" aria-hidden="true"></i></a></div> 
+    </div>
+</div>
+<div class="container-fluid">
+    <div>
+        <div>
             <div class="middle">
-                <div >
-                    <div style="margin-top: 20px;">
+                <div>
+                    <div style="margin-top: 20px; width: 50%;">
                         {{ wtf.quick_form(form) }}
-                        <!-- <form class="form form-inline" method="post" role="form">
-                            {{ form.hidden_tag() }}
-                            {{ wtf.form_errors(form, hiddens="only") }} 
-                            {{ wtf.form_field(form.name) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            {{ wtf.form_field(form.description) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            {{ wtf.form_field(form.submit) }}
-                        </form> -->
                         <br/> 
                     </div>
                 </div>
@@ -71,11 +66,11 @@
                                     </li>    
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red" style="margin:20px;" >Remove</button></a>
+                                    <a href="{{ url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red" style="float:right; margin:20px;margin-right:50px" >Remove</button></a>
                                 </td>
                             </tr>
                             {% endfor %}
-                        </table>Team Leader
+                        </table>
                         {% else %}
                         <div>
                             <span style="color: rgb(243, 125, 125);">
@@ -104,7 +99,7 @@
                                     </li>    
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red" style="margin:20px;" >Remove</button></a>
+                                    <a href="{{ url_for('admin.change_member_team', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-red" style="float:right; margin:20px;margin-right:50px" >Remove</button></a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -145,7 +140,7 @@
                                     </li>    
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="margin:20px;" >Add Member</button></a>
+                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="float:right; margin:20px;margin-right:50px" >Add Member</button></a>
                                 </td>
                             </tr>
                             {%endif%}
@@ -167,7 +162,7 @@
                                     </li>    
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="margin:20px;" >Add Member</button></a>
+                                    <a href="{{ url_for('admin.add_team_member', id=team.id, eid=emp.id) }}"><button id="popup{{emp.id}}" class="w3-button w3-green" style="float:right; margin:20px;margin-right:50px" >Add Member</button></a>
                                 </td>
                             </tr>
                             {%endif%}

@@ -1,10 +1,9 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request, jsonify
 from flask_login import login_required, current_user
 
 from . import home
 from .. import db
-from ..models import Employee
-
+from ..models import Employee, Team, Projects, EmpProjects, Task
 
 @home.route('/')
 def homepage():
@@ -23,7 +22,9 @@ def dashboard():
         lead = True
     else:
         lead = False
-    return render_template('home/dashboard.html', title='Dashboard', lead=lead)
+    team = current_user.getteam()
+    role = current_user.getrole()
+    return render_template('home/dashboard.html', title='Dashboard', lead=lead, team = team, role = role)
 
 
 @home.route('/admin/dashboard')
@@ -39,3 +40,98 @@ def admin_dashboard():
 def profile():
 
     return render_template('home/profilepage.html', title='Employee Profile')
+
+
+@home.route('/api/teammates', methods=['GET', 'POST'])
+@login_required
+def list_members():
+    """
+    List all employees
+    """
+    e = current_user.team_id
+    f = current_user.id
+    # print(f)
+    employees = Employee.query.filter((((Employee.id != f) & (Employee.team_id == e))))
+    if current_user.is_admin == 1:
+        employees = Employee.query.all()
+    # return render_template('lead/members/members.html',employees=employees, title='Employees')
+    emp = []
+    for x in employees:
+        emp.append({
+            'id' : x.id,
+            'Ename' : x.getname(x.id),
+            'Prole' : x.getrole(),
+        })
+    return jsonify(emp)
+
+
+@home.route('/homeapi/projects', methods=['GET', 'POST'])
+@login_required
+def team_projects():
+    """
+    List all projects
+    """
+    e = current_user.id
+    projects = EmpProjects.query.filter((((EmpProjects.eid == e)))).all()
+    PCount = []
+    for x in projects:
+        p = Projects.query.filter((Projects.pid == x.pid)).all()
+        # emp = EmpProjects.query.filter((EmpProjects.pid == x.pid)).all()
+        # a = []
+        for y in p:
+            PCount.append({
+                'Pro' : y.pid,
+                'Pname' : y.projectname,
+                'Pdesc' : y.description,
+                'Pstart': y.start_time,
+            })
+    return jsonify(PCount)
+
+
+@home.route('/homeapi/tasks/list', methods=['GET', 'POST'])
+@login_required
+def fetch_tasks():
+    """
+    List all projects
+    """
+    e = current_user.id
+    projects = Task.query.filter((((Task.employeeid == e)))).all()
+    PCount = []
+    for y in projects:
+        if y.status != 2:
+            PCount.append({
+                'Task' : y.task,
+                'id'   : y.taskid,
+                'pid' : y.pid,  
+                'priority' : y.priority,
+                'deadline' : y.end_time,
+                'starttime': y.start_time,
+                'status' : y.status
+            })       
+    return jsonify(PCount)
+
+@home.route('/homeapi/task/start', methods=['GET', 'POST'])
+@login_required
+def start_task():
+    """
+    List all projects
+    """
+    id = request.form.get('task')
+    # e = current_user.id
+    t = Task.query.filter((Task.taskid == id)).first()
+    t.status = 1
+    db.session.commit()
+    return jsonify({"success":"true"})
+
+@home.route('/homeapi/task/complete', methods=['GET', 'POST'])
+@login_required
+def complete_task():
+    """
+    List all projects
+    """
+    id = request.form.get('task')
+    # e = current_user.id
+    t = Task.query.filter((Task.taskid == id)).first()
+    t.status = 2
+    db.session.commit()
+    return jsonify({"success":"true"})

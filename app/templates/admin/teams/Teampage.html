@@ -1,6 +1,5 @@
-{% import "bootstrap/wtf.html" as wtf %}{% import "bootstrap/utils.html" as utils %}{% extends "dashboard.html" %} {% block title %}Teams{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}{% import "bootstrap/utils.html" as utils %}{% extends "testbase.html" %} {% block title %}Teams{% endblock %}
 {% block head %}
-{{ super() }}
 <script type="text/javascript">
     $(document).ready(function() {
         $('#teamform').on('submit', function(event) {
@@ -41,68 +40,273 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link href="../../../static/plugins/sweetalert/css/sweetalert.css" rel="stylesheet">
 {% endblock %}
-{% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-plain">
-              <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="card-header-info">
-                          <th>ID</th>
-                          <th>Team Name</th>
-                          <th>Description</th>
-                          <th width="20%">Employee Count</th>
-                          <th width="20%"></th>
-                          <!-- <th>Team</th> -->
-                        </thead>
-                        <tbody>
-                          {% for team in teams %}
-                          <tr>
-                            <td>{{team.id}}</td>
-                            <td>{{team.name}}</td>
-                            <td>{{team.description}}</td>
-                            <td ><span style="margin-left: 20px;">{% if team.employees %} {{ team.employees.count() }}</a> {% else %} 0 {% endif %}</span></td>
-                            <td>
-                                <a href="{{ url_for('admin.edit_team', id=team.id) }}" class="text-info" rel="tooltip" title="Modify Team" >
-                                    <i class="fa fa-external-link" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-                    </table>
-                    <button class="btn btn-dark btn-lg" id="myBtn"><i class="fa fa-plus"></i> Add Team</button>
-                    <div id="myModal" class="modal">
-                        <div class="modal-content">
-                            <div class="modal-header card-header-info">
-                                <h3>Add Team</h3>
-                                <!-- <span style="font-size:18px">Add Team</span> -->
-                                <span class="close">&times;</span>                          
-                            </div>
-                            <div class="modal-body">
-                                <br/>
-                                <form id="teamform" action="{{url_for('admin.team_add')}}" method="post">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="teamname" name="teamname" aria-describedby="namehelp" placeholder="Enter team name">
-                                        <small id="namehelp" class="form-text text-muted">Team Name should be unique</small>
+{%block page%}
+<link rel='stylesheet' href='https://www.w3schools.com/w3css/4/w3.css'>
+<div class="header pb-4 d-flex align-items-center bg-primary">
+    <div class="container-fluid">
+        <!-- <p class="text-white mt-0 mb-4">Add/Modify teams</p> -->
+        <div class="row align-middle">
+            <h1 class="display-2 text-white" style="float: inline-start;">Teams</h1><div style="margin: auto 8px;" ><a  href="#!" class="btn btn-neutral" data-toggle="modal" data-target="#modal-notification">Add Team</a></div>
+        </div> 
+    </div>
+</div>
+<div class= "row">
+    <div class="col-lg-3 pr-0 pb-4">
+        <div style="width: 100%;">
+            <ul class="navbar-nav mx-3 pt-4 pb-4 text-center" id="teamlist">
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-9 pl-0">
+        <div style="width: 100%s;height: 100%;  pb-4;" id="page"></div>
+    </div>
+</div>
+<script>
+    var u;
+    $.get("/admin/api/teams/list", function (data) {
+        var a = document.getElementById("teamlist");
+        u = data;
+        for(x in data){
+            a.innerHTML += "<li class='mylist nav-item mt-3 py-3 inactivel' id='id"+data[x]['id']+"' onclick='Page("+data[x]['id']+")' style='box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.19);cursor:pointer;'><span class='nav-link-text'>"+data[x]['name']+"</span><i class='fa fa-chevron-right mr-4' style='float:right'></i></li>"
+        }
+    });
+    function Page(id){       
+        var ob;
+        var edit = "/admin/teams/edit/" + id;
+        $.get(edit, function (data) {
+            console.log(data);
+            ob = `<div class='header pb-2 d-flex align-items-center bg-info'>
+                    <div class='container-fluid row justify-content-center'>
+                        <h1 class='display-2 text-white'>`+data['name']+` Team</h1>
+                        <div style='margin-top: auto; margin-bottom: auto; margin-left: 20px;' id='teamdelete'><a href='/admin/teams/delete/`+data['id']+`'
+                                style='cursor: pointer !important;' class='text-danger' rel='tooltip' title='Delete Team'><i
+                                    class='fa fa-trash' aria-hidden='true'></i></a></div>
+                    </div>
+                </div>
+                <div class='container-fluid'>
+                    <div>
+                        <div>
+                            <div class='middle'>
+                                <div>
+                                    <div style='margin: 20px auto; width: 50%;'>
+                                        <form action='`+edit+`'>
+                                            <div class='input-group'>
+                                                <input type='text' id='name' aria-label='Team name' value='`+ data['name'] +`' class='form-control'>
+                                                <input type='text' id='description' aria-label='Description'  value='`+ data['description'] +`' class='form-control'>
+                                                <button type='submit' class='button bg-secondary'>Submit</button>
+                                            </div>
+                                        </form>
+                                        <br />
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="teamdesc" name="teamdesc" placeholder="Description">
+                                </div>
+                                <div>
+                                    <h3>Team Lead</h3>
+                                    <hr style='background-color:black'>
+                                    <div class='w3-conainer' id='lead'>
                                     </div>
-                                        <button type="submit" class="btn btn-info">Submit</button>
-                                </form>
-                                <br/>
+                                    <br />
+                                    <h3>Team Members</h3>
+                                    <hr style='background-color:black'>
+                                    <div class='w3-conainer' id='members'>
+                                        <!-- <ul class='w3-card-4' style='list-style: none;'> -->
+                                        <!-- </ul> -->
+                                    </div>
+                                    <div class='card-title pt-2' id='nmem'>
+                                    </div>
+                                    <div class='w3-conainer' id='nmembers'>
+                                    </div>
+                                    <br />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <script type="text/javascript" src="{{url_for('static', filename='scripts/modal.js')}}"></script>
+                </div>`
+            page = document.getElementById("page");
+            page.innerHTML = ob;
+            if(data['nemp'].length != 0 ){
+                nmem = `<br />
+                        <h3><i class='material-icons'>person_add</i>  Add Members</h3>
+                        <hr style='background-color:black'>`
+                ele = "nmem";
+                document.getElementById(ele).innerHTML = nmem;
+            }
+            if(data['lead'].length !=0 ){
+                document.getElementById("lead").innerHTML = `<table class='table w3-card-4' id='leadtable'></table>`
+            }
+            else{
+                document.getElementById("lead").innerHTML = `<div><span style='color: rgb(243, 125, 125);'>No Team Lead assigned to Team</span></div>`;
+            }
+            if(data['lead'].length !=0 ){
+                for(l in data['lead']){
+                    var le = `<tr class='bg-white'>
+                                <td>
+                                    <li class='w3-bar' style='list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;'>
+                                        <img src='../../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:85px'>
+                                        <div class='w3-bar-item' style='list-style: none;'>
+                                        <span class='w3-large'>`+data['lead'][l]['name']+ `</span><br/><span>`+data['lead'][l]['role']+`</span> 
+                                        </div>
+                                    </li>    
+                                </td>
+                                <td>
+                                    <a onclick='RemoveM(`+data['id']+`,`+data['lead'][l]['id']+`)'><button id='popup`+data['lead'][l]['id']+`' class='w3-button w3-red' style='float:right; margin:20px;margin-right:50px' >Remove</button></a>
+                                </td>
+                            </tr>`
+                    document.getElementById("leadtable").innerHTML += le;
+                }
+            }
+            if(data['emp'].length !=0 ){
+                document.getElementById("members").innerHTML = `<table class='table w3-card-4' id='membertable'></table>`
+            }
+            else{
+                document.getElementById("members").innerHTML = `<div><span style='color: rgb(243, 125, 125);'>No members added to Team</span></div>`;
+            }
+            if(data['emp'].length !=0 ){
+                for(l in data['emp']){
+                    var le = `<tr class='bg-white'>
+                                <td>
+                                    <li class='w3-bar' style='list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;'>
+                                        <img src='../../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:85px'>
+                                        <div class='w3-bar-item' style='list-style: none;'>
+                                        <span class='w3-large'>`+data['emp'][l]['name']+ `</span><br/><span>`+data['emp'][l]['role']+`</span> 
+                                        </div>
+                                    </li>    
+                                </td>
+                                <td>
+                                    <a onclick='RemoveM(`+data['id']+`,`+data['emp'][l]['id']+`)'><button id='popup`+data['emp'][l]['id']+`' class='w3-button w3-red' style='float:right; margin:20px;margin-right:50px' >Remove</button></a>
+                                </td>
+                            </tr>`
+                    document.getElementById("membertable").innerHTML += le;
+                }
+            }
+            if(data['nemp'].length !=0 ){
+                document.getElementById("nmembers").innerHTML = `<table class='table w3-card-4' id='nmembertable'></table>`
+            }
+
+            if(data['nemp'].length !=0 ){
+                for(l in data['nemp']){
+                    if(data['nemp'][l]['team'] == "")
+                    {
+                        var le = `<tr style='background-color: rgb(165, 236, 143);'>
+                                    <td>
+                                        <li class='w3-bar' style='list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;'>
+                                            <img src='../../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:85px'>
+                                            <div class='w3-bar-item' style='list-style: none;'>
+                                            <span class='w3-large'>`+data['nemp'][l]['name']+ `</span><br/><span>`+data['nemp'][l]['role']+`</span> 
+                                            </div>
+                                        </li>    
+                                    </td>
+                                    <td>
+                                        <a onclick='AddM(`+data['id']+`,`+data['nemp'][l]['id']+`)'><button id='popup' class='w3-button w3-green' style='float:right; margin:20px;margin-right:50px' >Add Member</button></a>
+                                    </td>
+                                </tr>`
+                        document.getElementById("nmembertable").innerHTML += le;
+                    }
+                }
+                for(l in data['nemp']){
+                    if(data['nemp'][l]['team'] != "" )
+                    {
+                        var le = `<tr style='background-color: rgb(243, 125, 125);'>
+                                    <td>
+                                        <li class='w3-bar' style='list-style-type: none; margin-left: 35px; margin-top: 6px; margin-bottom: 6px;'>
+                                            <img src='../../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:85px'>
+                                            <div class='w3-bar-item' style='list-style: none;'>
+                                            <span class='w3-large'>`+data['nemp'][l]['name']+ `</span><br/><span>`+data['nemp'][l]['role']+`</span> 
+                                            </div>
+                                        </li>    
+                                    </td>
+                                    <td>
+                                        <a onclick='AddM(`+data['id']+`,`+data['nemp'][l]['id']+`)'><button id='popup' class='w3-button w3-green' style='float:right; margin:20px;margin-right:50px' >Add Member</button></a>
+                                    </td>
+                                </tr>`
+                        document.getElementById("nmembertable").innerHTML += le;
+                    }
+                }
+            }
+        });
+        z = "id"+id;
+        var er = document.getElementsByClassName("mylist");
+        for(let i=0;i<er.length;i++){
+            er[i].classList.remove("activel");
+            if(!(er[i].classList.contains("inactivel"))){
+                er[i].classList.add("inactivel");
+            }
+        }
+        document.getElementById(z).classList.add("activel");
+        // console.log("HI");
+    }
+    function RemoveM(id,eid){
+        $.ajax({
+            type: "POST",
+            url: "/admin/team/members/remove",
+            data: {'id':id, 'eid':eid },
+            success: reloadP(id),
+        });
+    }
+    function AddM(id,eid){
+        $.ajax({
+            type: "POST",
+            url: "/admin/team/members/add",
+            data: {'id':id, 'eid':eid },
+            success: reloadP(id),
+        });
+    }
+
+    window.onload = function() {
+        var id;
+        var reloading = sessionStorage.getItem("reloading");
+        if (reloading == "true") {
+            // console.log(sessionStorage.getItem("pid")+"HIHIH");
+            sessionStorage.removeItem("reloading");
+            id = sessionStorage.getItem("pid");
+            Page(sessionStorage.getItem("pid"));
+        }
+        else{
+            $.get("/admin/api/teams/list", function (data) {
+                id = data[0]['id'];
+                Page(data[0]['id']);
+            });
+        }
+    }
+
+    function reloadP(id) {
+        sessionStorage.setItem("reloading", "true");
+        sessionStorage.setItem("pid", id);
+        document.location.reload();
+    }
+
+</script>
+<!-- <div class="dynamic-height" style="background-color: rgba(255,0,0,0.1);">
+    <div style="width: 100px; background-color: rgba(0,0,255,0.1);">Max-height 100%</div>
+</div> -->
+<!-- <div id="t1" style="height: 100vh; display: none;"></div> -->
+<!-- <script>
+    $('.dynamic-height').css({
+                'height' : $('#t1').height() - ($('#navbar').height()) - $('.header').height()
+    });
+</script> -->
+<div class="modal fade" id="modal-notification" tabindex="-1" role="dialog"
+    aria-labelledby="modal-notification" aria-hidden="true" id="myModal">
+    <div class="modal-dialog modal-primary modal-dialog-centered modal-" role="document">
+        <div class="modal-content bg-gradient-primary">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-notification">Add Team</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body pt-0">
+                <form id="teamform" action="{{url_for('admin.team_add')}}" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="teamname" name="teamname" aria-describedby="namehelp" placeholder="Enter team name" required>
+                        <small id="namehelp" class="form-text">Team Name should be unique</small>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="teamdesc" name="teamdesc" placeholder="Description">
+                    </div>
+                        <button type="submit" class="btn btn-info">Submit</button>
+                </form>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
-
 {% endblock %}

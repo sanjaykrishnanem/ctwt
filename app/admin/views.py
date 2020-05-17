@@ -5,8 +5,8 @@ from sqlalchemy import null
 from . import admin
 from .forms import TeamForm, RoleForm,ChangeTeamForm, EmployeeAssignForm, TeamAssignForm
 from .. import db
-from ..models import Team, Role, Employee
-
+from ..models import Team, Role, Employee, EmpProjects, Projects
+import requests
 
 def check_admin():
     if not current_user.is_admin:
@@ -27,7 +27,35 @@ def admin_dashboard():
 def list_teams():
     check_admin()
     teams = Team.query.all()
-    return render_template('admin/teams/Teampage.html', title="Teams", teams=teams)
+    return render_template('admin/teams/Teampage.html', title="Teams")
+
+@admin.route('/api/teams/list', methods=['GET', 'POST'])
+@login_required
+def fetch_team_list():
+    check_admin()
+    teams = Team.query.all()
+    tlist = []
+    for x in teams:
+        emp = Employee.query.filter(((Employee.team_id == x.id))).all()
+        ecount = Employee.query.filter(((Employee.team_id == x.id))).count()
+        Employees = []
+        for y in emp:
+            Employees.append({
+                'id':y.id,
+                'name':y.getname(y.id),
+                'role' : y.getrole(),
+            })
+        if len(Employees) == 0:
+            Employees = "No member has been added to the team yet"
+        tlist.append({
+            'id' : x.id,
+            'name' : x.name,
+            'description' : x.description,
+            'employees' : Employees,
+            'ecount' : ecount
+
+        })
+    return jsonify(tlist)
 
 # @admin.route('/teams/add', methods=['GET', 'POST'])
 # @login_required
@@ -75,7 +103,7 @@ def team_add():
     except: 
         return jsonify({'success':False})
       
-    return jsonify({'success':True})
+    return redirect(url_for('admin.list_teams'))
     # try:
     #     db.session.add(team)
     #     db.session.commit()
@@ -84,6 +112,26 @@ def team_add():
     #     Addfail = 0
     #     return True
 
+# @admin.route('/teams/edit/<int:id>', methods=['GET', 'POST'])
+# @login_required
+# def edit_team(id):
+#     """
+#     Edit a team
+#     """
+#     check_admin()
+
+#     team = Team.query.get_or_404(id)
+#     lead = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 1)))
+#     emp = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 0)))
+#     nemp = Employee.query.filter(((Employee.team_id != id) | (Employee.team_id.is_(None)) )) 
+#     form = TeamForm(obj=team)
+#     if form.validate_on_submit():
+#         team.name = form.name.data
+#         team.description = form.description.data
+#         db.session.commit()
+#         return redirect(url_for('admin.edit_team', id=id))
+#     return render_template('admin/teams/team.html', form=form, employees=emp, lead=lead, notemployees=nemp, team=team, title="Edit Team")
+
 @admin.route('/teams/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_team(id):
@@ -91,18 +139,55 @@ def edit_team(id):
     Edit a team
     """
     check_admin()
+    team = Team.query.filter(((Team.id == id))).first()
 
-    team = Team.query.get_or_404(id)
-    lead = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 1)))
-    emp = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 0)))
-    nemp = Employee.query.filter(((Employee.team_id != id) | (Employee.team_id.is_(None)) )) 
-    form = TeamForm(obj=team)
-    if form.validate_on_submit():
+    if request.method == 'POST' or request.method == 'PUT':
+        form = request.form
         team.name = form.name.data
         team.description = form.description.data
         db.session.commit()
-        return redirect(url_for('admin.edit_team', id=id))
-    return render_template('admin/teams/team.html', form=form, employees=emp, lead=lead, notemployees=nemp, team=team, title="Edit Team")
+        return jsonify({"success" : "true"})
+
+    lead = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 1))).all()
+    emp = Employee.query.filter(((Employee.team_id == id) & (Employee.is_lead == 0))).all()
+    nemp = Employee.query.filter((((Employee.team_id != id) | (Employee.team_id.is_(None)) ) & (Employee.is_admin == 0))).all()  
+    L = []
+    for x in lead:
+        L.append({
+            'id' : x.id,
+            'name' : Employee.getname(x.id),
+            'role' : x.getrole()
+        })
+    E = []
+    for x in emp:
+        E.append({
+            'id' : x.id,
+            'name' : Employee.getname(x.id),
+            'role' : x.getrole() 
+        })
+    N = []
+    for x in nemp:
+        N.append({
+            'id' : x.id,
+            'name' : Employee.getname(x.id),
+            'role' : x.getrole(),
+            'team' : x.getteam() 
+        })
+    T = {
+        'id' : team.id,
+        'name' : team.name,
+        'description' : team.description,
+        'lead' : L,
+        'emp'  : E,
+        'nemp' : N,
+    }
+    return jsonify(T)
+    # if form.validate_on_submit():
+    #     team.name = form.name.data
+    #     team.description = form.description.data
+    #     db.session.commit()
+    #     return redirect(url_for('admin.edit_team', id=id))
+    # return render_template('admin/teams/team.html', form=form, employees=emp, lead=lead, notemployees=nemp, team=team, title="Edit Team")
 
 
 # @admin.route('/teams/delete/<int:id>', methods=['GET', 'POST'])
@@ -124,18 +209,51 @@ def edit_team(id):
 #     return render_template(title="Delete Team")
 
 
-@admin.route('/teams/delete', methods=['POST'])
+# @admin.route('/teams/delete', methods=['POST'])
+# @login_required
+# def team_delete():
+#     """
+#     Delete a team from the database
+#     """
+#     check_admin()
+#     id = request.form['id']
+#     team = Team.query.get_or_404(id)
+#     db.session.delete(team)
+#     db.session.commit()
+#     return jsonify({'success':True})
+
+@admin.route('/teams/delete/<int:id>', methods=['POST','GET'])
 @login_required
-def team_delete():
+def team_delete(id):
     """
     Delete a team from the database
     """
     check_admin()
-    id = request.form['id']
     team = Team.query.get_or_404(id)
+    emp = Employee.query.filter((Employee.team_id == id)).all()
+    for e in emp:
+        try:
+            e.team_id = None
+        except TypeError:
+            pass
+        db.session.commit()
+    q = Task.query.filter((Task.tid == id)).all()
+    for i in q:
+        db.session.delete(i)
+        db.session.commit()
+    db.session.delete(q)
+    db.session.commit()
+    p = Projects.query.filter((Projects.tid == id)).all()
+    for x in p:
+        e = EmpProjects.query.filter((EmpProjects.pid == x.pid)).all()
+        for l in e:
+            db.session.delete(e)
+            db.session.commit()
+        db.session.delete(x)
+        db.session.commit()
     db.session.delete(team)
     db.session.commit()
-    return jsonify({'success':True})
+    return redirect(url_for('admin.list_teams'))
 
 @admin.route('/roles')
 @login_required
@@ -378,24 +496,31 @@ def edit_team_members(id):
         flash(message)
     return render_template('admin/teams/members/edit.html', addmore = True, employees=employees, team=team, form=form, title="Add Team Members")
 
-@admin.route('/teams/members/add/<int:id>/<int:eid>', methods=['GET', 'POST'])
+@admin.route('/team/members/add', methods=['GET', 'POST'])
 @login_required
-def add_team_member(id, eid):
+def add_team_member():
     """
     Edit team members
     """
+    id = request.form['id']
+    eid = request.form['eid']
     check_admin()
     employee = Employee.query.get_or_404(eid)
     employee.team_id = id
     if employee.is_admin:
         abort(403)
     db.session.commit()
-    return redirect(url_for('admin.edit_team', id=id))
+    return jsonify({"sucess": "true"})
 
-@admin.route('/employees/team/change/<int:id>/<int:eid>', methods=['GET', 'POST'])
+
+@admin.route('/team/members/remove', methods=['GET', 'POST'])
 @login_required
-def change_member_team(id, eid):
+def remove_team_member():
     check_admin()
+    id = request.form['id']
+    eid = request.form['eid']
+    print(id)
+    print(eid)
     employee = Employee.query.get_or_404(eid)
     print(eid)
     if employee.is_admin:
@@ -405,4 +530,4 @@ def change_member_team(id, eid):
     except TypeError:
         pass
     db.session.commit()
-    return redirect(url_for('admin.edit_team', id=id))
+    return jsonify({"sucess":"true"})

@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block body %}
+{% extends "testbase.html" %} {% block title %}Dashboard{% endblock %} {% block body %}
 <div class="intro-header">
     <div class="container">
         <div class="row">
@@ -19,3 +19,341 @@
     </div>
 </div>
 {% endblock %}
+{% block page %}
+<!-- Page content -->
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!-- Card stats -->
+            <div class="row justify-content-center">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats" style="height: 110px;">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">My Active Projects</h5>
+                                    <span class="h2 font-weight-bold mb-0">0</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                        <i class="fa fa-object-group" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mt-3 mb-0 text-sm">
+                                <span class="text-success mr-2">0</span>
+                                <span class="text-nowrap">projects completed</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats" style="height: 110px;">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">My Team</h5>
+                                    <span class="h1 font-weight-bold mb-0">{{team}} Team</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                        <i class="fa fa-users" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <br /><span> </span>
+                            <!-- <p class="mt-3 mb-0 text-sm">
+                  <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                  <span class="text-nowrap">Since last month</span>
+                </p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-3">
+      <div class="card">
+          <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+              <div class="col">
+              <!-- <h6 class="text-uppercase text-muted ls-1 mb-1">Tasks</h6> -->
+              <h3 class="h3 mb-0">My Team Mates</h3>
+              </div>
+          </div>
+          </div>
+          <div class="w3bar card-body">
+              <ul class="w3-ul w3-card-1" style="list-style-type: none;" id="elist"></ul>
+              <script>
+                $.get( "/api/teammates", function( data ) {
+                    console.log(data);
+                    // alert( "Load was performed." );
+                    for(x in data){
+                        // if(data[x]['id'])
+                        console.log(x);
+                        document.getElementById("elist").innerHTML +="<li class='w3-bar'><img src='../../static/img/avatar.png' class='w3-bar-item w3-circle w3-hide-small' style='width:85px'><div class='w3-bar-item'><span class='w3-large'>"+data[x]['Ename']+"</span><br><span>"+data[x]['Prole']+"</span></div></li>";
+                    }
+                });
+            </script>
+          </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card">
+          <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+              <div class="col">
+              <!-- <h6 class="text-uppercase ls-1 mb-1">Overview</h6> -->
+              <h5 class="h3 mb-0">My Projects</h5>
+              </div>
+          </div>
+          </div>
+          <div class="card-body" style="padding-top: 0px;" id="ProHead">
+          <!-- Chart -->
+              <div class="table-responsive" id="ProList">
+                  <!-- Projects table -->
+                  <table class="table align-items-center">
+                      <thead class="thead-light">
+                          <tr>
+                          <th scope="col">Project name</th>
+                          <th scope="col">Description</th>
+                          </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      </tbody>
+                      <script>
+                          $.get( "/homeapi/projects", function( data ) {
+                          console.log(data);
+                          if(data.length == 0){
+                            //   document.getElementById("ProList").style.visibility = "hidden";
+                              document.getElementById("ProHead").innerHTML = `<div class="row justify-content-center align-items-center"><div class="col-auto mt-3" ><span class="text-danger">No Project has been assigned to you</span></div></div>`;
+
+                          }
+                          // alert( "Load was performed." );
+                          for(x in data){
+                              // console.log(x);
+                              document.getElementById("tbody").innerHTML +="<tr><th scope='row'>"+data[x]['Pname']+"</th><td>"+data[x]['Pdesc']+"</td></tr>";
+                          }
+                          });
+                      </script>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+    <div class="col-6">
+        <style>
+            .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            }
+
+            /* Style the buttons that are used to open the tab content */
+            .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            }
+
+            .tab button:hover {
+            background-color: #ddd;
+            }
+
+            .tab button.active {
+            background-color: #ccc;
+            }
+
+            .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+            }
+        </style>
+        <script>
+            function openCity(evt, cityName) {
+                // Declare all variables
+                var i, tabcontent, tablinks;
+
+                // Get all elements with class="tabcontent" and hide them
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+
+                // Get all elements with class="tablinks" and remove the class "active"
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+
+                // Show the current tab, and add an "active" class to the button that opened the tab
+                document.getElementById(cityName).style.display = "block";
+                evt.currentTarget.className += " active";
+                } 
+        </script>
+        <div class="card">
+            <div class="card-header">
+                <h3>My Tasks</h3>
+            </div>
+            <div class="card-body pt-0">
+                <div class="tab" id="tabs"></div>
+                </div>
+                <div id="taskList"></div>
+            </div>            
+            <script>
+                $.get( "/homeapi/projects", function( data ) {
+                    console.log(data);
+                    if(data.length == 0){
+                        document.getElementById("Tasklist").innerHTML = `<div class="row justify-content-center align-items-center"><div class="col-auto mt-3" ><span class="text-danger">You have to be assigned to a project to get tasks</span></div></div>`;
+                    }
+                    for(x in data){
+                        document.getElementById("tabs").innerHTML += `<button id='d`+data[x]['Pro']+`' class="tablinks" onclick="openCity(event, '`+data[x]['Pro']+`')">`+data[x]['Pname']+`</button>`;
+                        document.getElementById("taskList").innerHTML += `<div id='`+data[x]['Pro']+`' class="tabcontent table-responsive"><table id='Table`+data[x]['Pro']+`'><thead class='text-center'><th width='20%'>Task</th><th width='20%'>Deadline</th><th width='20%'>Progress</th><th width='10%'>Priority</th><th width='20%'></th></thead></table></div>`;
+                    }
+                    Page();
+                });                
+            </script>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+    function Page(){
+        $.get( "/homeapi/tasks/list", function( data ) {
+            console.log(data);
+            for(x in data){
+                var row = document.createElement("tr");
+                row.classList.add("text-center");
+                // // alert(s);
+                // row.innerHTML += "<td>"+data[x]['Task']+"</td>"
+                // row.innerHTML += "<td>"+data[x]['starttime']+"</td>"
+                // row.innerHTML += "<td>"+data[x]['deadline']+"</td>"
+                // row.innerHTML += "<td>"+data[x]['priority']+"</td>"
+                // if(data[x]['status'] == null || data[x]['status'] == "0"){
+                //     status = "Yet to start"
+                //     row.innerHTML += "<td>"+status+"</td>"
+                //     row.innerHTML += "<td><div onclick='start("+data[x]['id']+")' class='pt-1 pb-1 pr-2 pl-2'style='border-radius: 2rem; box-shadow: 1px 1px 3px grey;'><i class='fas fa-hourglass-start'></i> Start</div></td>"
+                // }
+                // else if(data[x]['status'] == "1"){
+                //     status = "On-going"
+                //     row.innerHTML += "<td>"+status+"</td>"
+                //     row.innerHTML += "<td><div onclick='complete("+data[x]['id']+")' class='pt-1 pb-1 pr-2 pl-2'style='border-radius: 2rem; box-shadow: 1px 1px 3px grey;'><i class='fas fa-tick'></i> Mark as completed</div></td>"
+                // }
+
+                var col2 = document.createElement("td");
+                var col3 = document.createElement("td");
+                var col4 = document.createElement("td");
+                var col5 = document.createElement("td");
+                var col6 = document.createElement("td");
+
+                col2.innerHTML = data[x]['Task'];
+                var s = new Date(data[x]['deadline']);
+                var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                s = days[s.getDay()]+", "+ s.getDate() + "-" + s.getMonth() + "-" + s.getFullYear()
+                col3.innerHTML = s;
+                if(data[x]['status'] == null || data[x]['status'] == 0){
+                    col4.innerHTML += "<i class='fas fa-clock mr-1 text-warning'></i> Yet to start";
+                }
+                else if(data[x]['status'] == 1){
+                    col4.innerHTML += "<i class='fas fa-hourglass-start mr-1 text-warning'></i> On-going";
+                }
+                // col5.innerHTML = data[x]['tasks'][y]['priority']
+                if(data[x]['priority'] == "1"){
+                    col5.classList.add("text-danger");
+                    col5.innerHTML = "High";
+                }
+                else{
+                    col5.classList.add("text-success");
+                    col5.innerHTML = "Low";
+                }
+                if(data[x]['status'] == null || data[x]['status'] == "0"){
+                    col6.innerHTML += "<td><div class='text-center mb-2 mt-2 pt-2 pb-2 pr-2 pl-1'style='cursor:pointer; '><a style='color:blue'onclick='start("+data[x]['id']+")'> Click to Start</a></div></td>"
+                }
+                else if(data[x]['status'] == "1"){
+                    col6.innerHTML += "<td><input type='checkbox' onclick='complete("+data[x]['id']+")'> <span class='text-sm'>Mark as completed</span></input></td>"
+                }
+                // col6.innerHTML = "<span style='cursor:pointer' onclick='deleteTask("+data[x]['id']+")'>x</span>";
+                // col6.classList.add("text-danger");    
+                
+                var s = new Date(data[x]['deadline']);
+                var today = new Date()
+                if(s.getDate() < today.getDate() && s.getMonth() <= today.getMonth() && s.getFullYear() <= today.getFullYear())
+                {   
+                    // alert("Noo");
+                    col3.classList.add("text-danger");
+                    col2.classList.add("text-danger");
+                    col4.classList.add("text-danger");
+                }
+                row.classList.add("mt-2");
+                row.classList.add("mb-2");
+                row.appendChild(col2);
+                row.appendChild(col3);
+                row.appendChild(col4);
+                row.appendChild(col5);
+                row.appendChild(col6);
+                var s = "Table"+data[x]['pid'];
+
+                document.getElementById(s).appendChild(row);       
+            }
+            // Get the element with id="defaultOpen" and click on it
+            document.getElementById("d"+data[0]['pid']).click();                                   
+        });
+    }
+    function start(id){
+        var formData = {
+            'task': id
+        };
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url: '/homeapi/task/start', // the url where we want to POST
+            data: formData, // our data object
+            dataType: 'json', // what type of data do we expect back from the server
+            encode: true
+        })
+        // using the done promise callback
+        .done(function (data) {
+
+            window.location
+                .reload();
+            // log data to the console so we can see
+            console.log(data);
+
+            // here we will handle errors and validation messages
+        });
+    }
+    function complete(id){
+        var formData = {
+            'task': id
+        };
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url: '/homeapi/task/complete', // the url where we want to POST
+            data: formData, // our data object
+            dataType: 'json', // what type of data do we expect back from the server
+            encode: true
+        })
+        // using the done promise callback
+        .done(function (data) {
+
+            window.location
+                .reload();
+            // log data to the console so we can see
+            console.log(data);
+
+            // here we will handle errors and validation messages
+        });
+    }
+    
+</script>           
+{% endblock%}
