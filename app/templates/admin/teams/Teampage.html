@@ -12,20 +12,7 @@
                 url : '{{url_for('admin.team_add')}}'
             })
             .done(function(data) {
-                    if(data.success){
-                        console.log("Success");
-                        document.getElementById('myModal').style.display='none';
-                        swal("Success","Team added","success").then((result) => {
-                            if (result.value) {
-                                window.location.reload();
-                            }
-                        }); 
-                    }
-                    else{
-                        console.log("error")
-                        document.getElementById('myModal').style.display='none';
-                        swal("Error","Team name already exists","error"); 
-                    }
+                    window.location.reload();
                 });
                 event.preventDefault();
             });
