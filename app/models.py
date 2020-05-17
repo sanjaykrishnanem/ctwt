@@ -41,6 +41,8 @@ class Employee(UserMixin, db.Model):
         return e.first_name + ' ' + e.last_name
     
     def getrole(self):
+        if self.role_id == None:
+            return "None"
         return Role.query.filter(Role.id == self.role_id).first().name
     
     def getteam(self):

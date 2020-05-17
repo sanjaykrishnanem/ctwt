@@ -57,10 +57,14 @@ def list_members():
     # return render_template('lead/members/members.html',employees=employees, title='Employees')
     emp = []
     for x in employees:
+        try:
+            role = x.getrole()
+        except e:
+            role = "None"
         emp.append({
             'id' : x.id,
             'Ename' : x.getname(x.id),
-            'Prole' : x.getrole(),
+            'Prole' : role,
         })
     return jsonify(emp)
 
