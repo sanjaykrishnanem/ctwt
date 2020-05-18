@@ -252,7 +252,7 @@ def team_delete(id):
     for i in q:
         db.session.delete(i)
         db.session.commit()
-    db.session.delete(q)
+    # db.session.delete(q)
     db.session.commit()
     p = Projects.query.filter((Projects.tid == id)).all()
     for x in p:
