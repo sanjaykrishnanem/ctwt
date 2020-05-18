@@ -517,9 +517,20 @@ def add_team_member():
     eid = request.form['eid']
     check_admin()
     employee = Employee.query.get_or_404(eid)
+    e = EmpProjects.query.filter((EmpProjects.eid == eid)).all()
+    for x in e:
+        a = EmpProjects.query.filter((EmpProjects.pid == x.pid) & (EmpProjects.eid == eid) & (EmpProjects.tid == x.tid)).first()
+        db.session.delete(a)
+        db.session.commit()
+    t = Task.query.filter((Task.employeeid == eid)).all()
+    for x in t:
+        a = Task.query.filter((Task.taskid == x.taskid)).first()
+        db.session.delete(a)
+        db.session.commit()
     employee.team_id = id
     if employee.is_admin:
         abort(403)
+    
     db.session.commit()
     return jsonify({"sucess": "true"})
 
