@@ -258,7 +258,8 @@ def team_delete(id):
     for x in p:
         e = EmpProjects.query.filter((EmpProjects.pid == x.pid)).all()
         for l in e:
-            db.session.delete(l)
+            z = EmpProjects.query.filter((EmpProjects.tid == l.tid)).first()
+            db.session.delete(z)
             db.session.commit()
         db.session.delete(x)
         db.session.commit()
