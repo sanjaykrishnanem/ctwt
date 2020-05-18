@@ -379,6 +379,7 @@ def addproject():
             db.session.commit()
         except e:
             db.session.rollback()
+    except:    
         print(e)
     return jsonify({"success":"true"})
 
