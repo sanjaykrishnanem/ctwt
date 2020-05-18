@@ -63,6 +63,7 @@
                                 <span class="nav-link-text">Employees</span>
                             </a></li>
                         {% else %}
+                        {% if current_user.is_lead == 0 %}
                         <li class="nav-item">
                             <a class="nav-link" id="udashlink" href="/dashboard">
                                 <i class="ni ni-tv-2 text-primary"></i>
@@ -75,6 +76,7 @@
                                 <span class="nav-link-text">Profile</span>
                             </a>
                         </li>
+                        {% endif %}
                         {% endif %}
                     </ul>
                     <!-- Divider -->
