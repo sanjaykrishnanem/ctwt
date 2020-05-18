@@ -109,7 +109,7 @@ class Projects(db.Model):
     tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
     projectname = db.Column(db.String(200), nullable=False, unique=True)
     description = db.Column(db.String(500), nullable=False)
-    start_time = db.Column(db.DateTime, default=datetime.utcnow)
+    # start_time = db.Column(db.DateTime, default=datetime.utcnow)
     closed = db.Column(db.Boolean, default=False)
     def __repr__(self):
         return '{}'.format(self.projectname)
