@@ -1,5 +1,5 @@
-    {% import "bootstrap/wtf.html" as wtf %}{% import "bootstrap/utils.html" as utils %}{% extends "dashboard.html" %} {% block title %}Roles{% endblock %}
-    {% block body %}
+    {% import "bootstrap/wtf.html" as wtf %}{% import "bootstrap/utils.html" as utils %}{% extends "testbase.html" %} {% block title %}Roles{% endblock %}
+    {% block page %}
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -37,9 +37,9 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link href="../../../static/plugins/sweetalert/css/sweetalert.css" rel="stylesheet">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
                 <div class="card card-plain">
                   <div class="card-body">
                     <div class="table-responsive">
