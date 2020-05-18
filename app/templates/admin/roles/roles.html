@@ -17,9 +17,7 @@
                             console.log("Success");
                             document.getElementById('myModal').style.display='none';
                             swal("Success","Role added successfully","success").then((result) => {
-                                if (result.value) {
-                                    window.location.reload();
-                                }
+                                window.location.reload();
                             }); 
                         }
                         else{
