@@ -99,10 +99,7 @@ def team_add():
     team = Team(name=teamname,description=teamdesc)
     try:
         db.session.add(team)
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
+        db.session.commit()
     except: 
         return jsonify({'success':False})
       
@@ -254,30 +251,18 @@ def team_delete(id):
     q = Task.query.filter((Task.tid == id)).all()
     for i in q:
         db.session.delete(i)
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
-    db.session.delete(q)
-    try:
         db.session.commit()
-    except:
-        db.session.rollback()
+    db.session.delete(q)
+    db.session.commit()
     p = Projects.query.filter((Projects.tid == id)).all()
     for x in p:
         e = EmpProjects.query.filter((EmpProjects.pid == x.pid)).all()
         for l in e:
             db.session.delete(e)
-            try:
-                db.session.commit()
-            except:
-                db.session.rollback()
-        db.session.delete(x)
-        try:
             db.session.commit()
-        except:
-            db.session.rollback()
-    f = Task.query.filter((Task.tid == id)).all()
+        db.session.delete(x)
+        db.session.commit()
+    f = Task.query.filter((Task.tid = id)).all()
     for x in f:
         e = Task.query.filer((Task.tid == x.tid)).first()
         db.session.delete(e)
@@ -286,10 +271,7 @@ def team_delete(id):
         except:
             db.session.rollback()
     db.session.delete(team)
-    try:
-        db.session.commit()
-    except:
-        db.session.rollback()
+    db.session.commit()
     return redirect(url_for('admin.list_teams'))
 
 @admin.route('/roles')
@@ -348,10 +330,7 @@ def role_add():
         role.name = name
         role.description = desc
         db.session.add(role)
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
+        db.session.commit()
     except: 
         return jsonify({'success':False})
 
@@ -371,10 +350,7 @@ def role_edit():
     try:
         role.name = name
         role.description = desc
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
+        db.session.commit()
     except: 
         return jsonify({'success':False})
 
@@ -389,10 +365,7 @@ def role_delete():
     role = Role.query.get_or_404(id)
     try:
         db.session.delete(role)
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
+        db.session.commit()
     except: 
         return jsonify({'success':False})
 
