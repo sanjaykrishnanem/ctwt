@@ -31,7 +31,7 @@ def dashboard():
         g = Projects.query.filter((Projects.pid == x.pid)).first()
         if g.closed == 1:
             compro = compro + 1
-        else
+        else:
             apro = apro + 1
     return render_template('home/dashboard.html', title='Dashboard', lead=lead, team = team, role = role, compro = compro, apro = apro)
 
