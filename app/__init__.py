@@ -40,6 +40,12 @@ def check_for_maintenance():
     if request.path == url_for('home.maintenance'):
         return redirect(url_for('home.maintenance'))
 
+@app.teardown_request
+def teardown_request(exception):
+    if exception:
+        db.session.rollback()
+    db.session.remove()
+
 @app.errorhandler(403)
 def forbidden(error):
     return render_template('errors/403.html', title='Forbidden'), 403
