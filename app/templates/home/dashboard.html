@@ -55,7 +55,14 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">My Team</h5>
+                                    {% if team %}
                                     <span class="h1 font-weight-bold mb-0">{{team}} Team</span>
+                                    {% else %}
+                                    <script>
+                                        document.getElementById("teamMates").innerHTML = "<span class="h1 font-weight-bold mb-0">{{team}} Team</span>";
+                                    </script>
+                                    <span class="text-danger mb-0">You have not been assigned any Team</span>
+                                    {% endif %}
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
@@ -87,7 +94,7 @@
               </div>
           </div>
           </div>
-          <div class="w3bar card-body">
+          <div class="w3bar card-body" id="teamMates">
               <ul class="w3-ul w3-card-1" style="list-style-type: none;" id="elist"></ul>
               <script>
                 $.get( "/api/teammates", function( data ) {
@@ -101,6 +108,13 @@
                 });
             </script>
           </div>
+            {% if team %}
+            {% else %}
+            <script>
+                document.getElementById("teamMates").innerHTML = `<span class="text-danger mb-0">You have not been assigned any Team</span>`;
+            </script>
+            <!-- <span class="text-danger mb-0">You have not been assigned any Team</span> -->
+            {% endif %}
       </div>
     </div>
     <div class="col-3">

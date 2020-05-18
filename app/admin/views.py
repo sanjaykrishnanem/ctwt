@@ -5,7 +5,7 @@ from sqlalchemy import null
 from . import admin
 from .forms import TeamForm, RoleForm,ChangeTeamForm, EmployeeAssignForm, TeamAssignForm
 from .. import db
-from ..models import Team, Role, Employee, EmpProjects, Projects
+from ..models import Team, Role, Employee, EmpProjects, Projects, Task
 # import requests
 
 def check_admin():
@@ -533,6 +533,16 @@ def remove_team_member():
     print(id)
     print(eid)
     employee = Employee.query.get_or_404(eid)
+    e = EmpProjects.query.filter((EmpProjects.eid == eid)).all()
+    for x in e:
+        a = EmpProjects.query.filter((EmpProjects.pid == x.pid) & (EmpProjects.eid == eid) & (EmpProjects.tid == x.tid)).first()
+        db.session.delete(a)
+        db.session.commit()
+    t = Task.query.filter((Task.employeeid == eid)).all()
+    for x in t:
+        a = Task.query.filter((Task.taskid == x.taskid)).first()
+        db.session.delete(a)
+        db.session.commit()
     print(eid)
     if employee.is_admin:
         abort(403)
