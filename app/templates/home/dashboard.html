@@ -206,7 +206,7 @@
             <div class="card-header">
                 <h3>My Tasks</h3>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body pt-0" id ="PRO">
                 <div class="tab" id="tabs"></div>
                 </div>
                 <div id="taskList"></div>
@@ -215,7 +215,7 @@
                 $.get( "/homeapi/projects", function( data ) {
                     console.log(data);
                     if(data.length == 0){
-                        document.getElementById("Tasklist").innerHTML = `<div class="row justify-content-center align-items-center"><div class="col-auto mt-3" ><span class="text-danger">You have to be assigned to a project to get tasks</span></div></div>`;
+                        document.getElementById("PRO").innerHTML = `<div class="row justify-content-center align-items-center"><div class="col-auto mt-3" ><span class="text-danger">You have to be assigned to a project to get tasks</span></div></div>`;
                     }
                     for(x in data){
                         document.getElementById("tabs").innerHTML += `<button id='d`+data[x]['Pro']+`' class="tablinks" onclick="openCity(event, '`+data[x]['Pro']+`')">`+data[x]['Pname']+`</button>`;

@@ -12,9 +12,9 @@
                 url : '{{url_for('admin.team_add')}}'
             })
             .done(function(data) {
-                    window.location.reload();
-                });
-                event.preventDefault();
+                window.location.reload();
+            });
+            event.preventDefault();
             });
     });
 </script>
@@ -62,7 +62,8 @@
         var edit = "/admin/teams/edit/" + id;
         $.get(edit, function (data) {
             console.log(data);
-            ob = `<div class='header pb-2 d-flex align-items-center bg-info'>
+            ob = `
+            <div class='header pb-2 d-flex align-items-center bg-info'>
                     <div class='container-fluid row justify-content-center'>
                         <h1 class='display-2 text-white'>`+data['name']+` Team</h1>
                         <div style='margin-top: auto; margin-bottom: auto; margin-left: 20px;' id='teamdelete'><a href='/admin/teams/delete/`+data['id']+`'
@@ -76,13 +77,6 @@
                             <div class='middle'>
                                 <div>
                                     <div style='margin: 20px auto; width: 50%;'>
-                                        <form action='`+edit+`'>
-                                            <div class='input-group'>
-                                                <input type='text' id='name' aria-label='Team name' value='`+ data['name'] +`' class='form-control'>
-                                                <input type='text' id='description' aria-label='Description'  value='`+ data['description'] +`' class='form-control'>
-                                                <button type='submit' class='button bg-secondary'>Submit</button>
-                                            </div>
-                                        </form>
                                         <br />
                                     </div>
                                 </div>

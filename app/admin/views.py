@@ -140,7 +140,6 @@ def edit_team(id):
     """
     check_admin()
     team = Team.query.filter(((Team.id == id))).first()
-
     if request.method == 'POST' or request.method == 'PUT':
         form = request.form
         team.name = form.name.data
@@ -182,14 +181,26 @@ def edit_team(id):
         'nemp' : N,
     }
     return jsonify(T)
-    # if form.validate_on_submit():
-    #     team.name = form.name.data
-    #     team.description = form.description.data
-    #     db.session.commit()
-    #     return redirect(url_for('admin.edit_team', id=id))
+    
+
+    
+
     # return render_template('admin/teams/team.html', form=form, employees=emp, lead=lead, notemployees=nemp, team=team, title="Edit Team")
 
+@admin.route('/team/modify', methods=['GET', 'POST'])
+@login_required
+def team_modify():
+    check_admin()
 
+    name = request.form.get('name')
+    desc = request.form.get('desc')
+    id = request.form.get('id')
+    T = Team.query.filter((Team.id == id)).first()
+    T.name = name
+    T.description = desc
+    db.session.commit()
+
+    return jsonify({"success":"true"})
 # @admin.route('/teams/delete/<int:id>', methods=['GET', 'POST'])
 # @login_required
 # def delete_team(id):

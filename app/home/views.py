@@ -19,7 +19,7 @@ def dashboard():
     if current_user.is_admin == 1:
         return redirect(url_for('admin.admin_dashboard'))
     if current_user.is_lead == 1:
-        lead = True
+        return redirect(url_for('lead.dash'))
     else:
         lead = False
     team = current_user.getteam()
