@@ -225,8 +225,8 @@ def apiteamtasks():
             try:
                 db.session.add(t)
                 db.session.commit()
-            except e:
-                print(e)
+            except:
+                db.session.rollback()
             
         return jsonify({"success":"true"})
         
@@ -375,9 +375,10 @@ def addproject():
     pro = Projects(projectname = pid, description = desc, tid = current_user.team_id)
     try:
         db.session.add(pro)
+        db.session.commit()
     except e:
+        db.session.rollback()
         print(e)
-    db.session.commit()
     return jsonify({"success":"true"})
 
 
