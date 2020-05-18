@@ -106,7 +106,7 @@ class Task(db.Model):
 class Projects(db.Model):
     __tablename__ = 'projects'
     pid  = db.Column(db.Integer, primary_key=True)
-    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
+    tid  = db.Column(db.Integer, db.ForeignKey('teams.id'))
     projectname = db.Column(db.String(200), nullable=False, unique=True)
     description = db.Column(db.String(500), nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow)
