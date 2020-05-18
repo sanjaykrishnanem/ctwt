@@ -372,7 +372,7 @@ def addproject():
     f = current_user.team_id
     pid = request.form.get('projectname')
     desc = request.form.get('desc')
-    pro = Projects(projectname = pid, description = desc, tid = current_user.team_id)
+    pro = Projects(projectname = pid, description = desc, tid = current_user.team_id, start_time = datetime.datetime.now())
     try:
         db.session.add(pro)
         try:
