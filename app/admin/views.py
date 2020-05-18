@@ -99,7 +99,10 @@ def team_add():
     team = Team(name=teamname,description=teamdesc)
     try:
         db.session.add(team)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
     except: 
         return jsonify({'success':False})
       
@@ -251,19 +254,42 @@ def team_delete(id):
     q = Task.query.filter((Task.tid == id)).all()
     for i in q:
         db.session.delete(i)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
     db.session.delete(q)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
     p = Projects.query.filter((Projects.tid == id)).all()
     for x in p:
         e = EmpProjects.query.filter((EmpProjects.pid == x.pid)).all()
         for l in e:
             db.session.delete(e)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
         db.session.delete(x)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+    f = Task.query.filter((Task.tid == id)).all()
+    for x in f:
+        e = Task.query.filer((Task.tid == x.tid)).first()
+        db.session.delete(e)
+        try:
+            db.session.commit(e)
+        except:
+            db.session.rollback()
     db.session.delete(team)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
     return redirect(url_for('admin.list_teams'))
 
 @admin.route('/roles')
@@ -322,7 +348,10 @@ def role_add():
         role.name = name
         role.description = desc
         db.session.add(role)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
     except: 
         return jsonify({'success':False})
 
@@ -342,7 +371,10 @@ def role_edit():
     try:
         role.name = name
         role.description = desc
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
     except: 
         return jsonify({'success':False})
 
@@ -357,7 +389,10 @@ def role_delete():
     role = Role.query.get_or_404(id)
     try:
         db.session.delete(role)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
     except: 
         return jsonify({'success':False})
 
@@ -448,7 +483,10 @@ def assign_employee(id):
             employee.is_lead = 0
         employee.role = form.role.data
         db.session.add(employee)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
         flash('You have successfully assigned a team and a role.')
 
         # redirect to the roles page
@@ -466,7 +504,25 @@ def delete_employee(id):
     Assign a team and a role to an employee
     """
     check_admin()
-
+    eid = id
+    T = Task.query.filter((Task.employeeid == id)).all()
+    e = EmpProjects.query.filter((EmpProjects.eid == eid)).all()
+    for x in e:
+        a = EmpProjects.query.filter((EmpProjects.pid == x.pid) & (EmpProjects.eid == eid) & (EmpProjects.tid == x.tid)).first()
+        db.session.delete(a)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+    t = Task.query.filter((Task.employeeid == eid)).all()
+    for x in t:
+        a = Task.query.filter((Task.taskid == x.taskid)).first()
+        db.session.delete(a)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+    
     employee = Employee.query.get_or_404(id)
 
     # prevent admin from being assigned a team or role
@@ -474,7 +530,10 @@ def delete_employee(id):
         abort(403)
 
     db.session.delete(employee)
-    db.session.commit()
+    try:
+        db.session.commit(e)
+    except:
+        db.session.rollback()
     flash('You have successfully deleted the account.')
 
     # redirect to the roles page
