@@ -262,7 +262,7 @@ def team_delete(id):
             db.session.commit()
         db.session.delete(x)
         db.session.commit()
-    f = Task.query.filter((Task.tid = id)).all()
+    f = Task.query.filter((Task.tid == id)).all()
     for x in f:
         e = Task.query.filer((Task.tid == x.tid)).first()
         db.session.delete(e)
