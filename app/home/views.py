@@ -24,7 +24,16 @@ def dashboard():
         lead = False
     team = current_user.getteam()
     role = current_user.getrole()
-    return render_template('home/dashboard.html', title='Dashboard', lead=lead, team = team, role = role)
+    pro = EmpProjects.query.filter((EmpProjects.eid == current_user.id)).all()
+    apro = 0
+    compro = 0
+    for x in pro:
+        g = Projects.query.filter((Projects.pid == x.pid)).first()
+        if g.closed == 1:
+            compro = compro + 1
+        else
+            apro = apro + 1
+    return render_template('home/dashboard.html', title='Dashboard', lead=lead, team = team, role = role, compro = compro, apro = apro)
 
 
 @home.route('/admin/dashboard')
