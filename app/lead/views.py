@@ -375,12 +375,9 @@ def addproject():
     pro = Projects(projectname = pid, description = desc, tid = current_user.team_id, start_time = datetime.datetime.now())
     try:
         db.session.add(pro)
-        try:
-            db.session.commit()
-        except e:
-            db.session.rollback()
-    except:    
-        print(e)
+        db.session.commit()
+    except e:
+        db.session.rollback()
     return jsonify({"success":"true"})
 
 
